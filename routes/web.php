@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\TestImageUploadController;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +13,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('app');
+// Route::get('/', function () {
+//     return view('app');
+// });
+Route::get('/', \App\Http\Livewire\Home::class)->name('home')->middleware('auth');
+Route::get('/home', \App\Http\Livewire\Home::class)->name('home')->middleware('auth');
+Route::group(['middleware'=>'guest'], function ()
+{
+    Route::get('/login', \App\Http\Livewire\Login::class)->name('login');
+    Route::get('/register', \App\Http\Livewire\Register::class)->name('register');
 });
+Route::get('/logout', [\App\Http\Livewire\Login::class,'logout'])->name('logout');
+Route::group(['middleware'=>'auth'], function(){
+    Route::get('/dashboard', \App\Http\Livewire\Dashboard::class)->name('dashboard');
+});
+
+/**Untuk Testing */
+Route::get('/test-image-upload', \App\Http\Livewire\TestImageUpload::class);
+Route::post('/test-image-upload-db', [TestImageUploadController::class, 'imageUpload'])->name('imageUploadDB');
