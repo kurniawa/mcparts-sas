@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite('resources/css/app.css')
+    {{-- @vite('resources/css/app.css') --}}
+    <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <title></title>
+    <title>MC-Parts SAS</title>
     <style>
         [x-cloak] {
             display: none;
@@ -15,7 +16,7 @@
     @livewireStyles()
     @livewireScripts()
 </head>
-<body>
+<body class="text-slate-600 text-sm">
     <nav class="w-full px-8 text-sm text-slate-500 bg-slate-100">
         <ul class="sm:flex sm:justify-between">
             <li class="">

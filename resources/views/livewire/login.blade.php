@@ -10,21 +10,21 @@
 
             <div class="mt-3">
                 <label for="username">Username</label>
-                <input type="text" id="username" class="input" wire:model='form.username'>
+                <input type="text" id="username" wire:model='form.username' class="border border-slate-400 text-slate-700 shadow rounded w-full px-3 py-2 block placeholder:text-slate-400 focus:outline-none focus:border-none focus:ring-1 focus:ring-blue-500 invalid:text-pink-700 invalid:focus:ring-pink-700;">
                 @error('form.username')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
             <div class="mt-3">
                 <label for="password">Password</label>
-                <input type="password" id="password" class="input" wire:model='form.password'>
+                <input type="password" id="password" wire:model='form.password' class="border border-slate-400 text-slate-700 shadow rounded w-full px-3 py-2 block placeholder:text-slate-400 focus:outline-none focus:border-none focus:ring-1 focus:ring-blue-500 invalid:text-pink-700 invalid:focus:ring-pink-700;">
                 @error('form.password')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="mt-3 text-center">
-                <button class="rounded btn-primary" type="submit">Login</button>
+                <button type="submit" class="rounded px-3 py-2 text-xs font-semibold bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 focus:ring focus:ring-blue-300">Login</button>
             </div>
         </form>
     </div>
