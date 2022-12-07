@@ -31,3 +31,5 @@ Route::group(['middleware'=>'auth'], function(){
 /**Untuk Testing */
 Route::get('/test-image-upload', \App\Http\Livewire\TestImageUpload::class);
 Route::post('/test-image-upload-db', [TestImageUploadController::class, 'imageUpload'])->name('imageUploadDB');
+
+/**SPK */
