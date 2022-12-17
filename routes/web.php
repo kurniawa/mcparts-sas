@@ -26,6 +26,7 @@ Route::group(['middleware'=>'guest'], function ()
 Route::get('/logout', [\App\Http\Livewire\Login::class,'logout'])->name('logout');
 Route::group(['middleware'=>'auth'], function(){
     Route::get('/dashboard', \App\Http\Livewire\Dashboard::class)->name('dashboard');
+    Route::get('/pembelian', \App\Http\Livewire\Pembelian::class)->name('pembelian');
 });
 
 /**Untuk Testing */

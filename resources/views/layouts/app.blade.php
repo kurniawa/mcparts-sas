@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {{-- @vite('resources/css/app.css') --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <title>MC-Parts SAS</title>
     <style>
@@ -35,7 +35,7 @@
                     <li><a class="py-2 pl-2 pr-8 block hover:bg-indigo-50" href="">Nota</a></li>
                     <li><a class="py-2 pl-2 pr-8 block hover:bg-indigo-50" href="">Sr.Jalan</a></li>
                     <li><a class="py-2 pl-2 pr-8 block hover:bg-indigo-50" href="">Penjualan</a></li>
-                    <li><a class="py-2 pl-2 pr-8 block hover:bg-indigo-50" href="">Pembelian</a></li>
+                    <li><a class="py-2 pl-2 pr-8 block hover:bg-indigo-50" href="{{ route('pembelian') }}">Pembelian</a></li>
                 </ul>
             </li>
             @endauth
