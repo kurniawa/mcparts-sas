@@ -69,4 +69,9 @@ class Pembelian extends Component
         $pembelian->delete();
         session()->flash('warning_logs',"Pembelian $pembelian->nama_barang telah dihapus dari database!");
     }
+
+    public function calculateHargaTotal()
+    {
+        $this->pembelian['harga_total'] = (int)$this->pembelian['jumlah'] * (int)$this->pembelian['harga_pcs'];
+    }
 }

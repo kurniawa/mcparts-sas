@@ -17,7 +17,7 @@
     @livewireScripts()
 </head>
 <body class="text-slate-600 text-sm">
-    <nav class="w-full px-8 text-sm text-slate-500 bg-slate-100">
+    <nav class="w-full px-8 text-sm text-slate-500 bg-indigo-200">
         <ul class="sm:flex sm:justify-between">
             <li class="">
                 <a class="h-full flex items-center px-3 hover:bg-slate-200" href="{{ route('home') }}">

@@ -26,21 +26,21 @@
             <div class="grid grid-cols-4 gap-1 mt-2">
                 <div class="">
                     <label for="jumlah">Jumlah :</label>
-                    <input class="input" type="number" wire:model="pembelian.jumlah">
+                    <input id="jumlah" class="input" type="number" wire:model="pembelian.jumlah" wire:change="calculateHargaTotal">
                     @error('pembelian.jumlah')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="">
                     <label for="harga_pcs">Harga/pcs. :</label>
-                    <input class="input" type="number" wire:model="pembelian.harga_pcs">
+                    <input id="harga_pcs" class="input" type="number" wire:model="pembelian.harga_pcs" wire:change="calculateHargaTotal">
                     @error('pembelian.harga_pcs')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="">
                     <label for="harga_total">Harga Total :</label>
-                    <input class="input" type="number" wire:model="pembelian.harga_total">
+                    <input id="harga_total" class="input" type="number" wire:model="pembelian.harga_total">
                     @error('pembelian.harga_total')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
@@ -136,7 +136,7 @@
 
         function formatHarga(harga) {
         // console.log(harga);
-        harga_ohne_titik = harga.replace(".", "");
+        let harga_ohne_titik = harga.replace(".", "");
         if (harga_ohne_titik.length < 4) {
             return harga;
         }
@@ -171,6 +171,14 @@
         deleteButton.classList.remove('hidden');
         confirmDelete.classList.add('hidden')
     }
+
+    // function calculateHargaTotal() {
+    //     var jumlah = document.getElementById('jumlah').value;
+    //     var harga_pcs = document.getElementById('harga_pcs').value;
+
+    //     var harga_total = jumlah * harga_pcs;
+    //     document.getElementById('harga_total').value = harga_total;
+    // }
     </script>
 </div>
 
