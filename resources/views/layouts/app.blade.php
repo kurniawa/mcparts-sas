@@ -104,7 +104,7 @@
 
             </div>
         @endauth
-        <main>
+        <main class="w-full">
             {{ $slot }}
 
         </main>

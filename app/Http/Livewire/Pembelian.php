@@ -7,17 +7,19 @@ use Livewire\Component;
 
 class Pembelian extends Component
 {
-    public $nama_barang="";
-    public $jenis_barang="";
-    public $supplier="";
-    public $jumlah=0;
-    public $harga_pcs=0;
-    public $harga_total=0;
-    public $tanggal="";
+    public $pembelian=[
+        'nama_barang'=>'',
+        'jenis_barang'=>'',
+        'supplier'=>'',
+        'jumlah'=>'',
+        'harga_pcs'=>'',
+        'harga_total'=>'',
+        'tanggal'=>'',
+    ];
 
     public function mount()
     {
-        $this->tanggal=date("Y-m-d H:i:s");
+        $this->pembelian['tanggal']=date("Y-m-d H:i:s");
     }
     public function render()
     {
@@ -29,12 +31,42 @@ class Pembelian extends Component
         return view('livewire.pembelian', $data);
     }
 
-    public function inputPembelian()
+    public function addPembelian()
     {
         // dump('masuk ke input pembelian');
+        // dd($this->pembelian);
         $this->validate([
-            'nama_barang'=>'required'
+            'pembelian.nama_barang'=>'required',
+            'pembelian.jumlah'=>'required',
+            'pembelian.harga_pcs'=>'required',
+            'pembelian.harga_total'=>'required',
+            'pembelian.tanggal'=>'required',
         ]);
-        dd('lolos validate!');
+        // dd($this->pembelian);
+        ModelsPembelian::create($this->pembelian);
+        // dd('lolos validate!');
+        $this->resetFormPembelian();
+        session()->flash('success_logs',"Pembelian baru telah diinput ke database!");
+    }
+
+    public function resetFormPembelian()
+    {
+        $this->pembelian=[
+            'nama_barang'=>'',
+            'jenis_barang'=>'',
+            'supplier'=>'',
+            'jumlah'=>'',
+            'harga_pcs'=>'',
+            'harga_total'=>'',
+            'tanggal'=>date('Y-m-d H:i:s'),
+        ];
+    }
+
+    public function deletePembelian($pembelian_id)
+    {
+        // dd($pembelian_id);
+        $pembelian=ModelsPembelian::find($pembelian_id);
+        $pembelian->delete();
+        session()->flash('warning_logs',"Pembelian $pembelian->nama_barang telah dihapus dari database!");
     }
 }

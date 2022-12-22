@@ -1,4 +1,4 @@
-<div class="container mx-auto">
+<div class="">
     {{-- Do your work, then step back. --}}
     <div class="px-2 mx-auto lg:w-3/12 md:w-4/12 mt-7">
         {{-- <x-server-feedback /> --}}

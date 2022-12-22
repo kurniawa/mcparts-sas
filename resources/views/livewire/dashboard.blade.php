@@ -1,4 +1,4 @@
-<div class="container mx-auto sm:w-3/4 relative" x-data={open_choose_photo:false}>
+<div class="p-5 relative" x-data={open_choose_photo:false}>
     <div class="text-center">
         <span class="text-sm text-slate-500 mt-5 block">"If you look to others for fulfillment, you will never truly be fulfilled."</span>
     </div>
