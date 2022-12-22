@@ -15,16 +15,19 @@ class Pembelian extends Component
         'harga_pcs'=>'',
         'harga_total'=>'',
         'tanggal'=>'',
+        'created_by'=>'',
     ];
+    public $mode = 'new';
 
     public function mount()
     {
         $this->pembelian['tanggal']=date("Y-m-d H:i:s");
+        $this->pembelian['created_by']=auth()->user()->username;
     }
     public function render()
     {
         // $tanggal=date("Y-m-d H:i:s");
-        $pembelians=ModelsPembelian::latest()->limit(100)->paginate(50);
+        $pembelians=ModelsPembelian::latest()->limit(300)->paginate(50);
         $data=[
             'pembelians'=>$pembelians
         ];
@@ -59,6 +62,7 @@ class Pembelian extends Component
             'harga_pcs'=>'',
             'harga_total'=>'',
             'tanggal'=>date('Y-m-d H:i:s'),
+            'created_by'=>auth()->user()->username,
         ];
     }
 
@@ -73,5 +77,21 @@ class Pembelian extends Component
     public function calculateHargaTotal()
     {
         $this->pembelian['harga_total'] = (int)$this->pembelian['jumlah'] * (int)$this->pembelian['harga_pcs'];
+    }
+
+    public function triggerEdit($pembelian_id)
+    {
+        // dd("edit trigered for: $pembelian_id");
+        $this->mode = "edit";
+        $pembelian = ModelsPembelian::find($pembelian_id);
+        $this->pembelian['nama_barang'] = $pembelian->nama_barang;
+        $this->pembelian['jenis_barang'] = $pembelian->jenis_barang;
+        $this->pembelian['supplier'] = $pembelian->supplier;
+        $this->pembelian['jumlah_1'] = $pembelian->jumlah;
+        $this->pembelian['satuan_1'] = $pembelian->satuan;
+        $this->pembelian['harga_1'] = $pembelian->satuan;
+        $this->pembelian['satuan_2'] = $pembelian->harga_satuan;
+        $this->pembelian['harga_per_satuan'] = $pembelian->harga_total_satuan;
+        $this->pembelian['harga_total_satuan'] = $pembelian->harga_total_satuan;
     }
 }
