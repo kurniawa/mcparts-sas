@@ -115,7 +115,8 @@ class Dashboard extends Component
         }
 
         $new_photo_name="PP-". uniqid() . ".jpg";
-        $new_photo_path=$this->photo->storeAs('images/profile-pictures',$new_photo_name);
+        $new_photo_path=$this->photo->storeAs('images/profile-pictures',$new_photo_name); //# ganti public
+        // $new_photo_path=$this->photo->move('images/profile-pictures',$new_photo_name);
         $user->update([
             'profile_picture'=>$new_photo_path
         ]);

@@ -23,20 +23,47 @@
                     <input class="input" type="text" wire:model="pembelian.supplier">
                 </div>
             </div>
-            <div class="grid grid-cols-4 gap-1 mt-2">
-                <div class="">
-                    <label for="jumlah">Jumlah :</label>
-                    <input id="jumlah" class="input" type="number" wire:model="pembelian.jumlah" wire:change="calculateHargaTotal">
-                    @error('pembelian.jumlah')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
-                    @enderror
-                </div>
-                <div class="">
-                    <label for="harga_pcs">Harga/pcs. :</label>
-                    <input id="harga_pcs" class="input" type="number" wire:model="pembelian.harga_pcs" wire:change="calculateHargaTotal">
-                    @error('pembelian.harga_pcs')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
-                    @enderror
+            <div class="grid grid-cols-3 gap-1 mt-2">
+                <div>
+                    @if ($sistem_double_satuan)
+                    <div class="">
+                        <label for="jumlah">Jumlah {{ $satuan_rol }}:</label>
+                        <input id="jumlah" class="input" type="number" wire:model="pembelian.jumlah" wire:change="calculateHargaTotal">
+                        @error('pembelian.jumlah')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="">
+                        <label for="jumlah">Jumlah {{ $satuan_meter }}:</label>
+                        <input id="jumlah" class="input" type="number" wire:model="pembelian.jumlah" wire:change="calculateHargaTotal">
+                        @error('pembelian.jumlah')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="">
+                        <label for="harga_pcs">Harga/{{ $satuan_meter }} :</label>
+                        <input id="harga_pcs" class="input" type="number" wire:model="pembelian.harga_pcs" wire:change="calculateHargaTotal">
+                        @error('pembelian.harga_pcs')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    @else
+                    <div class="">
+                        <label for="jumlah">Jumlah {{ $satuan_meter }}:</label>
+                        <input id="jumlah" class="input" type="number" wire:model="pembelian.jumlah" wire:change="calculateHargaTotal">
+                        @error('pembelian.jumlah')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="">
+                        <label for="harga_pcs">Harga/{{ $satuan_meter }} :</label>
+                        <input id="harga_pcs" class="input" type="number" wire:model="pembelian.harga_pcs" wire:change="calculateHargaTotal">
+                        @error('pembelian.harga_pcs')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    @endif
                 </div>
                 <div class="">
                     <label for="harga_total">Harga Total :</label>
