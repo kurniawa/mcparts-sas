@@ -21,7 +21,9 @@ class Pembelian extends Component
         'created_by'=>'',
     ];
     public $mode = 'new';
-    public $sistem_double_satuan=true;
+    public $sistem_double_satuan="yes";
+    public $class_toggle_satuan='right-0.5';
+    public $class_bg_toggle_satuan='bg-emerald-400';
 
     public function mount()
     {
@@ -38,7 +40,7 @@ class Pembelian extends Component
             'pembelians'=>$pembelians,
             'sistem_double_satuan'=>$this->sistem_double_satuan,
             'satuan_rol'=>$this->pembelian['satuan_rol'],
-            'satuan_meter'=>$this->pembelian['satuan_meter']
+            'satuan_meter'=>$this->pembelian['satuan_meter'],
         ];
         return view('livewire.pembelian', $data);
     }
@@ -89,6 +91,20 @@ class Pembelian extends Component
     public function calculateHargaTotal()
     {
         $this->pembelian['harga_total'] = (int)$this->pembelian['jumlah_rol'] * (int)$this->pembelian['harga_pcs'];
+    }
+
+    public function toggleSatuan()
+    {
+        if ($this->sistem_double_satuan==="yes") {
+            $this->sistem_double_satuan='no';
+            $this->class_toggle_satuan='left-0.5';
+            $this->class_bg_toggle_satuan='bg-slate-100';
+        } elseif ($this->sistem_double_satuan="no") {
+            $this->sistem_double_satuan="yes";
+            $this->class_toggle_satuan='right-0.5';
+            $this->class_bg_toggle_satuan='bg-emerald-400';
+        }
+
     }
 
     public function triggerEdit($pembelian_id)

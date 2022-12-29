@@ -23,36 +23,44 @@
                     <input class="input" type="text" wire:model="pembelian.supplier">
                 </div>
             </div>
-            <div class="grid grid-cols-3 gap-1 mt-2">
+            <div class="flex items-center mt-2">
+                <label for="">Double Satuan:</label>
                 <div>
-                    @if ($sistem_double_satuan)
-                    <div class="">
-                        <label for="jumlah">Jumlah {{ $satuan_rol }}:</label>
-                        <input id="jumlah" class="input" type="number" wire:model="pembelian.jumlah" wire:change="calculateHargaTotal">
-                        @error('pembelian.jumlah')
-                        <span class="text-red-500 text-xs">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="">
-                        <label for="jumlah">Jumlah {{ $satuan_meter }}:</label>
-                        <input id="jumlah" class="input" type="number" wire:model="pembelian.jumlah" wire:change="calculateHargaTotal">
-                        @error('pembelian.jumlah')
-                        <span class="text-red-500 text-xs">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="">
-                        <label for="harga_pcs">Harga/{{ $satuan_meter }} :</label>
-                        <input id="harga_pcs" class="input" type="number" wire:model="pembelian.harga_pcs" wire:change="calculateHargaTotal">
-                        @error('pembelian.harga_pcs')
-                        <span class="text-red-500 text-xs">{{ $message }}</span>
-                        @enderror
+                    <div class="border border-2 ml-2 border-slate-200 rounded-full relative w-7 h-4 {{ $class_bg_toggle_satuan }} hover:cursor-pointer" wire:click="toggleSatuan">
+                        <div class="absolute rounded-full w-2 h-2 bg-white shadow drop-shadow top-0.5 {{ $class_toggle_satuan }}"></div>
                     </div>
 
-                    @else
+                </div>
+                @if ($sistem_double_satuan==="yes")
+                <div class="flex ml-2 items-center">
+                    <label for="" class="ml-2 min-w-fit">Satuan 1:</label>
+                    <input type="text" class="ml-2 input" wire:model.lazy="pembelian.satuan_rol">
+                    <label for="" class="ml-2 min-w-fit">Satuan 2:</label>
+                    <input type="text" class="ml-2 input" wire:model.lazy="pembelian.satuan_meter">
+                </div>
+                @else
+                <div class="flex ml-2 items-center">
+                    <label for="" class="ml-2 min-w-fit">Satuan:</label>
+                    <input type="text" class="ml-2 input" wire:model.lazy="pembelian.satuan_meter">
+                </div>
+                @endif
+            </div>
+            {{-- <input type="radio" name="satuan" wire:model="sistem_double_satuan" id="" value="yes">
+            <input type="radio" name="satuan" wire:model="sistem_double_satuan" id="" value="no"> --}}
+            <div class="grid grid-cols-3 gap-1 mt-2">
+                @if ($sistem_double_satuan==="yes")
+                <div class="grid grid-cols-3">
                     <div class="">
-                        <label for="jumlah">Jumlah {{ $satuan_meter }}:</label>
-                        <input id="jumlah" class="input" type="number" wire:model="pembelian.jumlah" wire:change="calculateHargaTotal">
-                        @error('pembelian.jumlah')
+                        <label for="jumlah_rol">Jumlah {{ $satuan_rol }}:</label>
+                        <input id="jumlah_rol" class="input" type="number" wire:model="pembelian.jumlah_rol" wire:change="calculateHargaTotal">
+                        @error('pembelian.jumlah_rol')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="">
+                        <label for="jumlah_meter_1">Jumlah {{ $satuan_meter }}:</label>
+                        <input id="jumlah_meter_1" class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
+                        @error('pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
@@ -63,8 +71,25 @@
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
-                    @endif
                 </div>
+                @else
+                <div class="grid grid-cols-2">
+                    <div>
+                        <label for="jumlah_meter_2">Jumlah {{ $satuan_meter }}:</label>
+                        <input id="jumlah_meter_2" class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
+                        @error('pembelian.jumlah_meter')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="">
+                        <label for="harga_pcs">Harga/{{ $satuan_meter }} :</label>
+                        <input id="harga_pcs" class="input" type="number" wire:model="pembelian.harga_pcs" wire:change="calculateHargaTotal">
+                        @error('pembelian.harga_pcs')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                @endif
                 <div class="">
                     <label for="harga_total">Harga Total :</label>
                     <input id="harga_total" class="input" type="number" wire:model="pembelian.harga_total">
@@ -96,6 +121,8 @@
         {{ session('warning_logs') }}
     </div>
     @endif
+    <div class="bg-slate-300 right-0.5 left-0.5 bg-slate-100"></div>
+    <div class="bg-slate-200"></div>
     {{-- Table Pembelian --}}
     <table class="table-nice w-full mt-3">
         <thead>
@@ -105,7 +132,7 @@
                 <th>Jenis Barang</th>
                 <th>Supplier</th>
                 <th>Jumlah</th>
-                <th>Harga/pcs</th>
+                <th>Harga/satuan</th>
                 <th>Harga Total</th>
                 <th>Opsi</th>
             </tr>
@@ -117,8 +144,8 @@
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->jenis_barang }}</td>
                     <td>{{ $item->supplier }}</td>
-                    <td>{{ $item->jumlah }}</td>
-                    <td class="toFormatCurrencyRp">{{ $item->harga_pcs }}</td>
+                    <td>{{ $item->jumlah_meter }}</td>
+                    <td class="toFormatCurrencyRp">{{ $item->harga_meter }}</td>
                     <td class="toFormatCurrencyRp">{{ $item->harga_total }}</td>
                     <td>
                         <div>
