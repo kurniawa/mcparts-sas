@@ -1,10 +1,10 @@
 <div class="p-5">
     {{-- Do your work, then step back. --}}
     <div>
-        <button class="border border-emerald-500 text-emerald-500 rounded p-2 hover:bg-emerald-400 hover:text-white">+Input Pembelian</button>
+        <button id="btn-input-pembelian" class="border border-emerald-500 text-emerald-500 rounded p-2 hover:bg-emerald-400 hover:text-white" onclick="toggleFormPembelian()">+Input Pembelian</button>
         <button class="border border-indigo-400 text-indigo-400 rounded p-2 hover:bg-indigo-400 hover:text-white">Filter</button>
     </div>
-    <div class="mt-3">
+    <div id="form-pembelian" class="mt-3 hidden">
         <form wire:submit.prevent="addPembelian" class="p-2 rounded bg-white shadow drop-shadow">
             <div class="grid grid-cols-3 gap-1">
                 <div class="">
@@ -65,9 +65,9 @@
                         @enderror
                     </div>
                     <div class="">
-                        <label for="harga_pcs">Harga/{{ $satuan_meter }} :</label>
-                        <input id="harga_pcs" class="input" type="number" wire:model="pembelian.harga_pcs" wire:change="calculateHargaTotal">
-                        @error('pembelian.harga_pcs')
+                        <label for="harga_meter">Harga/{{ $satuan_meter }} :</label>
+                        <input id="harga_meter" class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
+                        @error('pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
@@ -82,9 +82,9 @@
                         @enderror
                     </div>
                     <div class="">
-                        <label for="harga_pcs">Harga/{{ $satuan_meter }} :</label>
-                        <input id="harga_pcs" class="input" type="number" wire:model="pembelian.harga_pcs" wire:change="calculateHargaTotal">
-                        @error('pembelian.harga_pcs')
+                        <label for="harga_meter">Harga/{{ $satuan_meter }} :</label>
+                        <input id="harga_meter" class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
+                        @error('pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
@@ -99,8 +99,8 @@
                 </div>
                 <div class="">
                     <label for="tanggal">Tanggal :</label>
-                    <input class="input" type="datetime-local" step="any" wire:model="pembelian.tanggal">
-                    @error('pembelian.tanggal')
+                    <input class="input" type="datetime-local" step="any" wire:model="pembelian.created_at">
+                    @error('pembelian.created_at')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
                 </div>
@@ -121,8 +121,7 @@
         {{ session('warning_logs') }}
     </div>
     @endif
-    <div class="bg-slate-300 right-0.5 left-0.5 bg-slate-100"></div>
-    <div class="bg-slate-200"></div>
+
     {{-- Table Pembelian --}}
     <table class="table-nice w-full mt-3">
         <thead>
@@ -144,31 +143,40 @@
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->jenis_barang }}</td>
                     <td>{{ $item->supplier }}</td>
-                    <td>{{ $item->jumlah_meter }}</td>
+                    <td>
+                        <span class="flex justify-center">
+                            @if ($item->jumlah_rol!==null)
+                            {{ $item->jumlah_rol }}{{ $item->satuan_rol }} &#64; {{ $item->jumlah_meter }}{{ $item->satuan_meter }}
+                            @else
+                            {{ $item->jumlah_meter }} {{ $item->satuan_meter }}
+                            @endif
+
+                        </span>
+                    </td>
                     <td class="toFormatCurrencyRp">{{ $item->harga_meter }}</td>
                     <td class="toFormatCurrencyRp">{{ $item->harga_total }}</td>
                     <td>
-                        <div>
+                        <div class="flex">
                             <button id="deleteButton-{{ $item->id }}" class="bg-pink-500 text-white rounded p-1 hover:bg-pink-600" onclick="showConfirmDelete('deleteButton-{{ $item->id }}','confirmDelete-{{ $item->id }}')">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                 </svg>
                             </button>
-                            <button id="editButton-{{ $item->id }}" class="bg-yellow-500 text-white rounded p-1 hover:bg-yellow-600" wire:click="triggerEdit({{ $item->id }})">
+                            <div id="confirmDelete-{{ $item->id }}" class="hidden flex">
+                                <button class="bg-pink-500 text-white rounded p-1 hover:bg-pink-600" wire:click="deletePembelian({{ $item->id }})">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                    </svg>
+                                </button>
+                                <button class="bg-yellow-400 text-white rounded p-1 hover:bg-yellow-500 ml-1" onclick="hideConfirmDelete('deleteButton-{{ $item->id }}','confirmDelete-{{ $item->id }}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <button id="editButton-{{ $item->id }}" class="bg-yellow-500 text-white rounded p-1 hover:bg-yellow-600 ml-1" wire:click="triggerEdit({{ $item->id }})">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div id="confirmDelete-{{ $item->id }}" class="hidden">
-                            <button class="bg-pink-500 text-white rounded p-1 hover:bg-pink-600" wire:click="deletePembelian({{ $item->id }})">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                                </svg>
-                            </button>
-                            <button class="bg-yellow-400 text-white rounded p-1 hover:bg-yellow-500" onclick="hideConfirmDelete('deleteButton-{{ $item->id }}','confirmDelete-{{ $item->id }}')">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
@@ -233,13 +241,21 @@
         confirmDelete.classList.add('hidden')
     }
 
-    // function calculateHargaTotal() {
-    //     var jumlah = document.getElementById('jumlah').value;
-    //     var harga_pcs = document.getElementById('harga_pcs').value;
-
-    //     var harga_total = jumlah * harga_pcs;
-    //     document.getElementById('harga_total').value = harga_total;
-    // }
+    function toggleFormPembelian() {
+        var form_pembelian=document.getElementById('form-pembelian');
+        var btn_input_pembelian=document.getElementById('btn-input-pembelian');
+        if (form_pembelian.classList.contains('hidden')) {
+            form_pembelian.classList.remove('hidden');
+            btn_input_pembelian.classList.remove('text-emerald-500');
+            btn_input_pembelian.classList.add('text-white');
+            btn_input_pembelian.classList.add('bg-emerald-400');
+        } else {
+            form_pembelian.classList.add('hidden');
+            btn_input_pembelian.classList.remove('bg-emerald-400');
+            btn_input_pembelian.classList.remove('text-white');
+            btn_input_pembelian.classList.add('text-emerald-500');
+        }
+    }
     </script>
 </div>
 

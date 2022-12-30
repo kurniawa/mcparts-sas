@@ -17,7 +17,7 @@ class Pembelian extends Component
         'jumlah_meter'=>'',
         'harga_meter'=>'',
         'harga_total'=>'',
-        'tanggal'=>'',
+        'created_at'=>'',
         'created_by'=>'',
     ];
     public $mode = 'new';
@@ -27,7 +27,7 @@ class Pembelian extends Component
 
     public function mount()
     {
-        $this->pembelian['tanggal']=date("Y-m-d H:i:s");
+        $this->pembelian['created_at']=date("Y-m-d H:i:s");
         $this->pembelian['satuan_rol']='rol';
         $this->pembelian['satuan_meter']='meter';
         $this->pembelian['created_by']=auth()->user()->username;
@@ -51,10 +51,10 @@ class Pembelian extends Component
         // dd($this->pembelian);
         $this->validate([
             'pembelian.nama_barang'=>'required',
-            'pembelian.jumlah'=>'required',
-            'pembelian.harga_pcs'=>'required',
+            'pembelian.jumlah_meter'=>'required',
+            'pembelian.harga_meter'=>'required',
             'pembelian.harga_total'=>'required',
-            'pembelian.tanggal'=>'required',
+            'pembelian.created_at'=>'required',
         ]);
         // dd($this->pembelian);
         ModelsPembelian::create($this->pembelian);
@@ -73,9 +73,9 @@ class Pembelian extends Component
             'satuan_meter'=>'meter',
             'jumlah_rol'=>'',
             'jumlah_meter'=>'',
-            'harga_pcs'=>'',
+            'harga_meter'=>'',
             'harga_total'=>'',
-            'tanggal'=>date('Y-m-d H:i:s'),
+            'created_at'=>date('Y-m-d H:i:s'),
             'created_by'=>auth()->user()->username,
         ];
     }
@@ -90,7 +90,11 @@ class Pembelian extends Component
 
     public function calculateHargaTotal()
     {
-        $this->pembelian['harga_total'] = (int)$this->pembelian['jumlah_rol'] * (int)$this->pembelian['harga_pcs'];
+        if ($this->sistem_double_satuan==='yes') {
+            $this->pembelian['harga_total'] = (int)$this->pembelian['jumlah_rol'] * (int)$this->pembelian['jumlah_meter'] * (int)$this->pembelian['harga_meter'];
+        } else {
+            $this->pembelian['harga_total'] = (int)$this->pembelian['jumlah_meter'] * (int)$this->pembelian['harga_meter'];
+        }
     }
 
     public function toggleSatuan()
@@ -99,12 +103,22 @@ class Pembelian extends Component
             $this->sistem_double_satuan='no';
             $this->class_toggle_satuan='left-0.5';
             $this->class_bg_toggle_satuan='bg-slate-100';
+            $this->pembelian['satuan_rol']=null;
+            $this->pembelian['jumlah_rol']=null;
         } elseif ($this->sistem_double_satuan="no") {
             $this->sistem_double_satuan="yes";
             $this->class_toggle_satuan='right-0.5';
             $this->class_bg_toggle_satuan='bg-emerald-400';
+            $this->pembelian['satuan_rol']='rol';
         }
+    }
 
+    public $show_form_pembelian="no";
+    public function toggleFormPembelian()
+    {
+        if ($this->show_form_pembelian='no') {
+            # code...
+        }
     }
 
     public function triggerEdit($pembelian_id)
