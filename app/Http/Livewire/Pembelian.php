@@ -31,16 +31,25 @@ class Pembelian extends Component
         $this->pembelian['satuan_rol']='rol';
         $this->pembelian['satuan_meter']='meter';
         $this->pembelian['created_by']=auth()->user()->username;
+
+        $this->filter['tanggal_dari']=date("Y-m-d H:i:s");
+        $this->filter['tanggal_sampai']=date("Y-m-d H:i:s");
     }
     public function render()
     {
         // $tanggal=date("Y-m-d H:i:s");
-        $pembelians=ModelsPembelian::latest()->limit(300)->paginate(50);
+        if ($this->hasil_filter!=='') {
+            $pembelians=$this->hasil_filter;
+        } else {
+            $pembelians=ModelsPembelian::latest()->limit(300)->paginate(50);
+        }
         $data=[
             'pembelians'=>$pembelians,
             'sistem_double_satuan'=>$this->sistem_double_satuan,
             'satuan_rol'=>$this->pembelian['satuan_rol'],
             'satuan_meter'=>$this->pembelian['satuan_meter'],
+            'show_form_pembelian'=>$this->show_form_pembelian,
+            'class_btn_input_pembelian'=>$this->class_btn_input_pembelian,
         ];
         return view('livewire.pembelian', $data);
     }
@@ -114,11 +123,85 @@ class Pembelian extends Component
     }
 
     public $show_form_pembelian="no";
+    public $class_btn_input_pembelian="";
     public function toggleFormPembelian()
     {
-        if ($this->show_form_pembelian='no') {
-            # code...
+        if ($this->show_form_pembelian==="no") {
+            $this->show_form_pembelian="yes";
+        } elseif ($this->show_form_pembelian==="yes") {
+            $this->show_form_pembelian="no";
         }
+    }
+
+    public $filter=[
+        'nama_barang'=>'',
+        'jenis_barang'=>'',
+        'supplier'=>'',
+        'tanggal_dari'=> '',
+        'tanggal_sampai'=> '',
+    ];
+    public $hasil_filter='';
+    public function filterPembelians()
+    {
+        // dd("filter:",$this->filter);
+        if ($this->filter['nama_barang']!=='') {
+            if ($this->filter['jenis_barang']!=='') {
+                if ($this->filter['supplier']!=='') {
+                    if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
+                        $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->where('supplier','like',"%".$this->filter['supplier']."%")
+                        ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
+                        ->limit(300)->orderByDesc('created_at')->get();
+                    } else {
+                        $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->where('supplier','like',"%".$this->filter['supplier']."%")
+                        ->latest()->limit(300)->get();
+                    }
+                }
+            } else {
+                if ($this->filter['supplier']!=='') {
+                    if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
+                        $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->where('supplier','like',"%".$this->filter['supplier']."%")
+                        ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
+                        ->limit(300)->orderByDesc('created_at')->get();
+                    } else {
+                        $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->where('supplier','like',"%".$this->filter['supplier']."%")
+                        ->latest()->limit(300)->get();
+                    }
+                } else {
+                    if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
+                        $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
+                        ->limit(300)->orderByDesc('created_at')->get();
+                    } else {
+                        $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->latest()->limit(300)->get();
+                    }
+                }
+            }
+        } elseif ($this->filter['jenis_barang']!=='') {
+            if ($this->filter['supplier']!=='') {
+                if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
+                    $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                    ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    ->where('supplier','like',"%".$this->filter['supplier']."%")
+                    ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
+                    ->limit(300)->orderByDesc('created_at')->get();
+                } else {
+                    $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                    ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    ->where('supplier','like',"%".$this->filter['supplier']."%")
+                    ->latest()->limit(300)->get();
+                }
+            }
+        }
+
+
+        dd($pembelians);
     }
 
     public function triggerEdit($pembelian_id)

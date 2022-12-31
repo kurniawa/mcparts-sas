@@ -116,6 +116,6 @@
         // dump(Auth::user());
     @endphp
     <div class="bg-slate-300 right-0.5 left-0.5 bg-slate-100 bg-emerald-400"></div>
-    <div class="bg-slate-200 text-white"></div>
+    <div class="bg-slate-200 text-white hidden"></div>
 </body>
 </html>

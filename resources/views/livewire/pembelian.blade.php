@@ -1,10 +1,10 @@
 <div class="p-5">
     {{-- Do your work, then step back. --}}
     <div>
-        <button id="btn-input-pembelian" class="border border-emerald-500 text-emerald-500 rounded p-2 hover:bg-emerald-400 hover:text-white" onclick="toggleFormPembelian()">+Input Pembelian</button>
+        <button id="btn-input-pembelian" class="border border-emerald-500 rounded p-2 hover:bg-emerald-400 hover:text-white @if($show_form_pembelian==="no") text-emerald-500 @elseif($show_form_pembelian==="yes") text-white bg-emerald-400 @endif" wire:click="toggleFormPembelian">+Input Pembelian</button>
         <button class="border border-indigo-400 text-indigo-400 rounded p-2 hover:bg-indigo-400 hover:text-white">Filter</button>
     </div>
-    <div id="form-pembelian" class="mt-3 hidden">
+    <div id="form-pembelian" class="mt-3 @if($show_form_pembelian==="no") hidden @endif">
         <form wire:submit.prevent="addPembelian" class="p-2 rounded bg-white shadow drop-shadow">
             <div class="grid grid-cols-3 gap-1">
                 <div class="">
@@ -107,6 +107,45 @@
             </div>
             <div class="mt-2 text-right">
                 <button type="submit" class="btn-indigo rounded">Input Pembelian</button>
+            </div>
+        </form>
+    </div>
+
+    {{-- FILTER --}}
+    <div class="rounded p-2 bg-white shadow drop-shadow mt-2">
+        <form wire:submit.prevent="filterPembelians">
+            <div class="grid grid-cols-3">
+                <div>
+                    <label>Nama Barang:</label>
+                    <div class="flex mt-1">
+                        <input type="text" class="input" placeholder="Nama Barang" wire:model="filter.nama_barang">
+                    </div>
+                </div>
+                <div class="ml-2">
+                    <label>Jenis Barang:</label>
+                    <div class="flex mt-1">
+                        <input type="text" class="input" placeholder="Jenis Barang" wire:model="filter.jenis_barang">
+                    </div>
+                </div>
+                <div class="ml-2">
+                    <label>Supplier:</label>
+                    <div class="flex mt-1">
+                        <input type="text" class="input" placeholder="Supplier" wire:model="filter.supplier">
+                    </div>
+                </div>
+            </div>
+            <div class="flex mt-1">
+                <div>
+                    <label>Tanggal:</label>
+                    <div class="flex items-center mt-1">
+                        <input type="datetime-local" class="input" wire:model="filter.tanggal_dari" step="any">
+                        <span class="mx-1">-</span>
+                        <input type="datetime-local" class="input" wire:model="filter.tanggal_sampai" step="any">
+                    </div>
+                </div>
+            </div>
+            <div class="text-right">
+                <button type="submit" class="btn-indigo mt-2 rounded">Filter</button>
             </div>
         </form>
     </div>
