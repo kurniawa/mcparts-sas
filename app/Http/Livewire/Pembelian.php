@@ -45,11 +45,6 @@ class Pembelian extends Component
         }
         $data=[
             'pembelians'=>$pembelians,
-            'sistem_double_satuan'=>$this->sistem_double_satuan,
-            'satuan_rol'=>$this->pembelian['satuan_rol'],
-            'satuan_meter'=>$this->pembelian['satuan_meter'],
-            'show_form_pembelian'=>$this->show_form_pembelian,
-            'class_btn_input_pembelian'=>$this->class_btn_input_pembelian,
         ];
         return view('livewire.pembelian', $data);
     }
@@ -88,6 +83,7 @@ class Pembelian extends Component
             'created_by'=>auth()->user()->username,
         ];
     }
+
 
     public function deletePembelian($pembelian_id)
     {
@@ -140,6 +136,16 @@ class Pembelian extends Component
         'tanggal_dari'=> '',
         'tanggal_sampai'=> '',
     ];
+
+    public $show_filter="no";
+    public function toggleFilter()
+    {
+        if ($this->show_filter==="no") {
+            $this->show_filter="yes";
+        } elseif ($this->show_filter==="yes") {
+            $this->show_filter="no";
+        }
+    }
     public $hasil_filter='';
     public function filterPembelians()
     {
@@ -159,6 +165,17 @@ class Pembelian extends Component
                         ->where('supplier','like',"%".$this->filter['supplier']."%")
                         ->latest()->limit(300)->get();
                     }
+                } else {
+                    if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
+                        $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
+                        ->limit(300)->orderByDesc('created_at')->get();
+                    } else {
+                        $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->latest()->limit(300)->get();
+                    }
                 }
             } else {
                 if ($this->filter['supplier']!=='') {
@@ -169,6 +186,7 @@ class Pembelian extends Component
                         ->limit(300)->orderByDesc('created_at')->get();
                     } else {
                         $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
+                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
                         ->where('supplier','like',"%".$this->filter['supplier']."%")
                         ->latest()->limit(300)->get();
                     }
@@ -186,22 +204,43 @@ class Pembelian extends Component
         } elseif ($this->filter['jenis_barang']!=='') {
             if ($this->filter['supplier']!=='') {
                 if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
-                    $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
-                    ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    $pembelians=ModelsPembelian::where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
                     ->where('supplier','like',"%".$this->filter['supplier']."%")
                     ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
                     ->limit(300)->orderByDesc('created_at')->get();
                 } else {
-                    $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
-                    ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    $pembelians=ModelsPembelian::where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
                     ->where('supplier','like',"%".$this->filter['supplier']."%")
                     ->latest()->limit(300)->get();
                 }
+            } else {
+                if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
+                    $pembelians=ModelsPembelian::where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
+                    ->limit(300)->orderByDesc('created_at')->get();
+                } else {
+                    $pembelians=ModelsPembelian::where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    ->latest()->limit(300)->get();
+                }
             }
+        } elseif ($this->filter['supplier']!=='') {
+            if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
+                $pembelians=ModelsPembelian::where('supplier','like',"%".$this->filter['supplier']."%")
+                ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
+                ->limit(300)->orderByDesc('created_at')->get();
+            } else {
+                $pembelians=ModelsPembelian::where('supplier','like',"%".$this->filter['supplier']."%")
+                ->latest()->limit(300)->get();
+            }
+        } elseif ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
+            $pembelians=ModelsPembelian::whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
+                ->limit(300)->orderByDesc('created_at')->get();
+        } else {
+            $pembelians="";
         }
 
-
-        dd($pembelians);
+        $this->hasil_filter = $pembelians;
+        // dd($pembelians);
     }
 
     public function triggerEdit($pembelian_id)
@@ -218,5 +257,7 @@ class Pembelian extends Component
         $this->pembelian['jumlah_meter'] = $pembelian->jumlah_meter;
         $this->pembelian['harga_meter'] = $pembelian->harga_meter;
         $this->pembelian['harga_total'] = $pembelian->harga_total;
+        $this->pembelian['created_at'] = date('Y-m-d H:i:s', strtotime($pembelian->created_at));
+        // dd($this->pembelian);
     }
 }

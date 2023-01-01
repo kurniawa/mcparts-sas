@@ -1,8 +1,8 @@
 <div class="p-5">
     {{-- Do your work, then step back. --}}
     <div>
-        <button id="btn-input-pembelian" class="border border-emerald-500 rounded p-2 hover:bg-emerald-400 hover:text-white @if($show_form_pembelian==="no") text-emerald-500 @elseif($show_form_pembelian==="yes") text-white bg-emerald-400 @endif" wire:click="toggleFormPembelian">+Input Pembelian</button>
-        <button class="border border-indigo-400 text-indigo-400 rounded p-2 hover:bg-indigo-400 hover:text-white">Filter</button>
+        <button class="border border-emerald-500 rounded p-2 hover:bg-emerald-400 hover:text-white @if($show_form_pembelian==="no") text-emerald-500 @elseif($show_form_pembelian==="yes") text-white bg-emerald-400 @endif" wire:click="toggleFormPembelian">+Input Pembelian</button>
+        <button class="border border-indigo-400 rounded p-2 hover:bg-indigo-400 hover:text-white @if($show_filter==="no") text-indigo-400 @elseif($show_filter==="yes") text-white bg-indigo-300 @endif" wire:click="toggleFilter">Filter</button>
     </div>
     <div id="form-pembelian" class="mt-3 @if($show_form_pembelian==="no") hidden @endif">
         <form wire:submit.prevent="addPembelian" class="p-2 rounded bg-white shadow drop-shadow">
@@ -26,7 +26,7 @@
             <div class="flex items-center mt-2">
                 <label for="">Double Satuan:</label>
                 <div>
-                    <div class="border border-2 ml-2 border-slate-200 rounded-full relative w-7 h-4 {{ $class_bg_toggle_satuan }} hover:cursor-pointer" wire:click="toggleSatuan">
+                    <div class="border-2 ml-2 border-slate-200 rounded-full relative w-7 h-4 {{ $class_bg_toggle_satuan }} hover:cursor-pointer" wire:click="toggleSatuan">
                         <div class="absolute rounded-full w-2 h-2 bg-white shadow drop-shadow top-0.5 {{ $class_toggle_satuan }}"></div>
                     </div>
 
@@ -51,21 +51,21 @@
                 @if ($sistem_double_satuan==="yes")
                 <div class="grid grid-cols-3">
                     <div class="">
-                        <label for="jumlah_rol">Jumlah {{ $satuan_rol }}:</label>
+                        <label for="jumlah_rol">Jumlah {{ $pembelian['satuan_rol'] }}:</label>
                         <input id="jumlah_rol" class="input" type="number" wire:model="pembelian.jumlah_rol" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_rol')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
-                        <label for="jumlah_meter_1">Jumlah {{ $satuan_meter }}:</label>
+                        <label for="jumlah_meter_1">Jumlah {{ $pembelian['satuan_meter'] }}:</label>
                         <input id="jumlah_meter_1" class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
-                        <label for="harga_meter">Harga/{{ $satuan_meter }} :</label>
+                        <label for="harga_meter">Harga/{{ $pembelian['satuan_meter'] }} :</label>
                         <input id="harga_meter" class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -75,14 +75,14 @@
                 @else
                 <div class="grid grid-cols-2">
                     <div>
-                        <label for="jumlah_meter_2">Jumlah {{ $satuan_meter }}:</label>
+                        <label for="jumlah_meter_2">Jumlah {{ $pembelian['satuan_meter'] }}:</label>
                         <input id="jumlah_meter_2" class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
-                        <label for="harga_meter">Harga/{{ $satuan_meter }} :</label>
+                        <label for="harga_meter">Harga/{{ $pembelian['satuan_meter'] }} :</label>
                         <input id="harga_meter" class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -112,7 +112,7 @@
     </div>
 
     {{-- FILTER --}}
-    <div class="rounded p-2 bg-white shadow drop-shadow mt-2">
+    <div class="rounded p-2 bg-white shadow drop-shadow mt-2 @if($show_filter==="no") hidden @endif">
         <form wire:submit.prevent="filterPembelians">
             <div class="grid grid-cols-3">
                 <div>
@@ -185,15 +185,15 @@
                     <td>
                         <span class="flex justify-center">
                             @if ($item->jumlah_rol!==null)
-                            {{ $item->jumlah_rol }}{{ $item->satuan_rol }} &#64; {{ $item->jumlah_meter }}{{ $item->satuan_meter }}
+                            {{ $item->jumlah_rol }}{{ $item->satuan_rol }}&#64;{{ $item->jumlah_meter }}{{ $item->satuan_meter }}
                             @else
                             {{ $item->jumlah_meter }} {{ $item->satuan_meter }}
                             @endif
 
                         </span>
                     </td>
-                    <td class="toFormatCurrencyRp">{{ $item->harga_meter }}</td>
-                    <td class="toFormatCurrencyRp">{{ $item->harga_total }}</td>
+                    <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_meter, 0, ',','.') }},-</span></div></td>
+                    <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_total, 0, ',','.') }},-</span></div></td>
                     <td>
                         <div class="flex">
                             <button id="deleteButton-{{ $item->id }}" class="bg-pink-500 text-white rounded p-1 hover:bg-pink-600" onclick="showConfirmDelete('deleteButton-{{ $item->id }}','confirmDelete-{{ $item->id }}')">
@@ -201,7 +201,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                 </svg>
                             </button>
-                            <div id="confirmDelete-{{ $item->id }}" class="hidden flex">
+                            <div id="confirmDelete-{{ $item->id }}" class="hidden">
                                 <button class="bg-pink-500 text-white rounded p-1 hover:bg-pink-600" wire:click="deletePembelian({{ $item->id }})">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
@@ -221,80 +221,91 @@
                         </div>
                     </td>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+                @endforeach
+            </tbody>
+        </table>
 
     <script>
-        var toFormatCurrencyRp=document.querySelectorAll('.toFormatCurrencyRp');
-        toFormatCurrencyRp.forEach(element => {
-            // console.log('toFormatCurrencyRp');
-            formatCurrencyRp(parseInt(element.textContent), element);
-        });
+        function toFormatCurrencyRp() {
+            var toFormatRp=document.querySelectorAll('.toFormatCurrencyRp');
+            toFormatRp.forEach(element => {
+                // console.log('toFormatRp');
+                formatCurrencyRp(parseInt(element.textContent), element);
+            });
+
+        }
+
         function formatCurrencyRp(number, element) {
-        // console.log(element);
-        var formatted_number = formatHarga(number.toString());
-        if (element == null) {
-            return formatted_number;
-        } else {
-            element.innerHTML = `<div><div class="flex justify-between"><span>Rp</span><span>${formatted_number},-</span></div></div>`;
             // console.log(element);
-            return true;
+            var formatted_number = formatHarga(number.toString());
+            if (element == null) {
+                return formatted_number;
+            } else {
+                element.innerHTML = `<div><div class="flex justify-between"><span>Rp</span><span>${formatted_number},-</span></div></div>`;
+                // console.log(element);
+                return true;
+            }
         }
 
         function formatHarga(harga) {
-        // console.log(harga);
-        let harga_ohne_titik = harga.replace(".", "");
-        if (harga_ohne_titik.length < 4) {
-            return harga;
+            // console.log(harga);
+            let harga_ohne_titik = harga.replace(".", "");
+            if (harga_ohne_titik.length < 4) {
+                return harga;
+            }
+            let hargaRP = "";
+            let akhir = harga_ohne_titik.length;
+            let posisi = akhir - 3;
+            let jmlTitik = Math.ceil(harga_ohne_titik.length / 3 - 1);
+            // console.log(jmlTitik);
+            for (let i = 0; i < jmlTitik; i++) {
+                hargaRP = "." + harga_ohne_titik.slice(posisi, akhir) + hargaRP;
+                // console.log(hargaRP);
+                akhir = posisi;
+                posisi = akhir - 3;
+            }
+            hargaRP = harga_ohne_titik.slice(0, akhir) + hargaRP;
+            return hargaRP;
         }
-        let hargaRP = "";
-        let akhir = harga_ohne_titik.length;
-        let posisi = akhir - 3;
-        let jmlTitik = Math.ceil(harga_ohne_titik.length / 3 - 1);
-        // console.log(jmlTitik);
-        for (let i = 0; i < jmlTitik; i++) {
-            hargaRP = "." + harga_ohne_titik.slice(posisi, akhir) + hargaRP;
-            // console.log(hargaRP);
-            akhir = posisi;
-            posisi = akhir - 3;
+
+        function showConfirmDelete(button_id,element_id) {
+            var deleteButton = document.getElementById(button_id);
+            var confirmDelete = document.getElementById(element_id);
+
+            deleteButton.classList.add('hidden');
+            confirmDelete.classList.remove('hidden');
+            confirmDelete.classList.add('flex');
         }
-        hargaRP = harga_ohne_titik.slice(0, akhir) + hargaRP;
-        return hargaRP;
-    }
-    }
 
-    function showConfirmDelete(button_id,element_id) {
-        var deleteButton = document.getElementById(button_id);
-        var confirmDelete = document.getElementById(element_id);
+        function hideConfirmDelete(button_id,element_id) {
+            var deleteButton = document.getElementById(button_id);
+            var confirmDelete = document.getElementById(element_id);
 
-        deleteButton.classList.add('hidden');
-        confirmDelete.classList.remove('hidden')
-    }
-
-    function hideConfirmDelete(button_id,element_id) {
-        var deleteButton = document.getElementById(button_id);
-        var confirmDelete = document.getElementById(element_id);
-
-        deleteButton.classList.remove('hidden');
-        confirmDelete.classList.add('hidden')
-    }
-
-    function toggleFormPembelian() {
-        var form_pembelian=document.getElementById('form-pembelian');
-        var btn_input_pembelian=document.getElementById('btn-input-pembelian');
-        if (form_pembelian.classList.contains('hidden')) {
-            form_pembelian.classList.remove('hidden');
-            btn_input_pembelian.classList.remove('text-emerald-500');
-            btn_input_pembelian.classList.add('text-white');
-            btn_input_pembelian.classList.add('bg-emerald-400');
-        } else {
-            form_pembelian.classList.add('hidden');
-            btn_input_pembelian.classList.remove('bg-emerald-400');
-            btn_input_pembelian.classList.remove('text-white');
-            btn_input_pembelian.classList.add('text-emerald-500');
+            deleteButton.classList.remove('hidden');
+            confirmDelete.classList.add('hidden');
+            confirmDelete.classList.remove('flex');
         }
-    }
+
+        function toggleFormPembelian() {
+            var form_pembelian=document.getElementById('form-pembelian');
+            var btn_input_pembelian=document.getElementById('btn-input-pembelian');
+            if (form_pembelian.classList.contains('hidden')) {
+                form_pembelian.classList.remove('hidden');
+                btn_input_pembelian.classList.remove('text-emerald-500');
+                btn_input_pembelian.classList.add('text-white');
+                btn_input_pembelian.classList.add('bg-emerald-400');
+            } else {
+                form_pembelian.classList.add('hidden');
+                btn_input_pembelian.classList.remove('bg-emerald-400');
+                btn_input_pembelian.classList.remove('text-white');
+                btn_input_pembelian.classList.add('text-emerald-500');
+            }
+        }
+        // document.addEventListener('livewire:load', function () {
+        //     // Your JS here.
+        //     // toFormatCurrencyRp();
+        // })
     </script>
+    {{-- @push('scripts')
+@endpush --}}
 </div>
-
