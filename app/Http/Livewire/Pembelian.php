@@ -20,7 +20,7 @@ class Pembelian extends Component
         'created_at'=>'',
         'created_by'=>'',
     ];
-    public $mode = 'new';
+    // public $mode = 'new';
     public $sistem_double_satuan="yes";
     public $class_toggle_satuan='right-0.5';
     public $class_bg_toggle_satuan='bg-emerald-400';
@@ -38,11 +38,7 @@ class Pembelian extends Component
     public function render()
     {
         // $tanggal=date("Y-m-d H:i:s");
-        if ($this->hasil_filter!=='') {
-            $pembelians=$this->hasil_filter;
-        } else {
-            $pembelians=ModelsPembelian::latest()->limit(300)->paginate(50);
-        }
+        $pembelians=ModelsPembelian::latest()->limit(300)->paginate(50);
         $data=[
             'pembelians'=>$pembelians,
         ];
@@ -243,21 +239,120 @@ class Pembelian extends Component
         // dd($pembelians);
     }
 
+    // EDIT PEMBELIAN
+    public $edit_pembelian=[
+        'id'=>'',
+        'nama_barang'=>'',
+        'jenis_barang'=>'',
+        'supplier'=>'',
+        'satuan_rol'=>'',
+        'satuan_meter'=>'',
+        'jumlah_rol'=>'',
+        'jumlah_meter'=>'',
+        'harga_meter'=>'',
+        'harga_total'=>'',
+        'created_at'=>'',
+        'updated_at'=>'',
+        'updated_by'=>'',
+    ];
+    public $show_form_edit="no";
+    public $sistem_double_satuan_edit="yes";
+    public $class_toggle_satuan_edit='right-0.5';
+    public $class_bg_toggle_satuan_edit='bg-emerald-400';
     public function triggerEdit($pembelian_id)
     {
         // dd("edit trigered for: $pembelian_id");
-        $this->mode = "edit";
+        // $this->mode = "edit";
         $pembelian = ModelsPembelian::find($pembelian_id);
-        $this->pembelian['nama_barang'] = $pembelian->nama_barang;
-        $this->pembelian['jenis_barang'] = $pembelian->jenis_barang;
-        $this->pembelian['supplier'] = $pembelian->supplier;
-        $this->pembelian['satuan_rol'] = $pembelian->satuan_rol;
-        $this->pembelian['satuan_meter'] = $pembelian->satuan_meter;
-        $this->pembelian['jumlah_rol'] = $pembelian->jumlah_rol;
-        $this->pembelian['jumlah_meter'] = $pembelian->jumlah_meter;
-        $this->pembelian['harga_meter'] = $pembelian->harga_meter;
-        $this->pembelian['harga_total'] = $pembelian->harga_total;
-        $this->pembelian['created_at'] = date('Y-m-d H:i:s', strtotime($pembelian->created_at));
+        $this->edit_pembelian['id'] = $pembelian->id;
+        $this->edit_pembelian['nama_barang'] = $pembelian->nama_barang;
+        $this->edit_pembelian['jenis_barang'] = $pembelian->jenis_barang;
+        $this->edit_pembelian['supplier'] = $pembelian->supplier;
+        $this->edit_pembelian['satuan_rol'] = $pembelian->satuan_rol;
+        $this->edit_pembelian['satuan_meter'] = $pembelian->satuan_meter;
+        $this->edit_pembelian['jumlah_rol'] = $pembelian->jumlah_rol;
+        $this->edit_pembelian['jumlah_meter'] = $pembelian->jumlah_meter;
+        $this->edit_pembelian['harga_meter'] = $pembelian->harga_meter;
+        $this->edit_pembelian['harga_total'] = $pembelian->harga_total;
+        $this->edit_pembelian['created_at'] = date('Y-m-d H:i:s', strtotime($pembelian->created_at));
+        $this->edit_pembelian['updated_by'] = auth()->user()->username;
         // dd($this->pembelian);
+        if ($pembelian->satuan_rol===null || $pembelian->satuan_rol==="") {
+            $this->sistem_double_satuan_edit="no";
+            $this->class_toggle_satuan_edit='left-0.5';
+            $this->class_bg_toggle_satuan_edit='bg-slate-100';
+        } else {
+            $this->sistem_double_satuan_edit="yes";
+            $this->class_toggle_satuan_edit='right-0.5';
+            $this->class_bg_toggle_satuan_edit='bg-emerald-400';
+        }
+        $this->show_form_edit="yes";
+    }
+
+    public function toggleSatuanEdit()
+    {
+        if ($this->sistem_double_satuan_edit==="yes") {
+            $this->sistem_double_satuan_edit='no';
+            $this->class_toggle_satuan_edit='left-0.5';
+            $this->class_bg_toggle_satuan_edit='bg-slate-100';
+        } elseif ($this->sistem_double_satuan_edit="no") {
+            $this->sistem_double_satuan_edit="yes";
+            $this->class_toggle_satuan_edit='right-0.5';
+            $this->class_bg_toggle_satuan_edit='bg-emerald-400';
+        }
+    }
+
+    public function cancelEdit()
+    {
+        $this->show_form_edit="no";
+        $this->resetEdit();
+    }
+
+    public function editPembelian()
+    {
+        $pembelian = ModelsPembelian::find($this->edit_pembelian['id']);
+        $pembelian->update([
+            'nama_barang'=>$this->edit_pembelian['nama_barang'],
+            'jenis_barang'=>$this->edit_pembelian['jenis_barang'],
+            'supplier'=>$this->edit_pembelian['supplier'],
+            'satuan_rol'=>$this->edit_pembelian['satuan_rol'],
+            'satuan_meter'=>$this->edit_pembelian['satuan_meter'],
+            'jumlah_rol'=>$this->edit_pembelian['jumlah_rol'],
+            'jumlah_meter'=>$this->edit_pembelian['jumlah_meter'],
+            'harga_meter'=>$this->edit_pembelian['harga_meter'],
+            'harga_total'=>$this->edit_pembelian['harga_total'],
+            'created_at'=>$this->edit_pembelian['created_at'],
+            'updated_at'=>date('Y-m-d H:i:s'),
+            'updated_by'=>$this->edit_pembelian['updated_by'],
+        ]);
+        session()->flash('success_logs',"Pembelian $pembelian->nama_barang berhasil diedit!");
+    }
+
+    public function resetEdit()
+    {
+        $this->edit_pembelian=[
+            'id'=>'',
+            'nama_barang'=>'',
+            'jenis_barang'=>'',
+            'supplier'=>'',
+            'satuan_rol'=>'',
+            'satuan_meter'=>'',
+            'jumlah_rol'=>'',
+            'jumlah_meter'=>'',
+            'harga_meter'=>'',
+            'harga_total'=>'',
+            'created_at'=>'',
+            'updated_at'=>'',
+            'updated_by'=>'',
+        ];
+    }
+
+    public function calculateHargaTotalEdit()
+    {
+        if ($this->sistem_double_satuan_edit==='yes') {
+            $this->edit_pembelian['harga_total'] = (int)$this->edit_pembelian['jumlah_rol'] * (int)$this->edit_pembelian['jumlah_meter'] * (int)$this->edit_pembelian['harga_meter'];
+        } else {
+            $this->edit_pembelian['harga_total'] = (int)$this->edit_pembelian['jumlah_meter'] * (int)$this->edit_pembelian['harga_meter'];
+        }
     }
 }

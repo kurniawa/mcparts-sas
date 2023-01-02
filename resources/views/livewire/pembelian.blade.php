@@ -3,6 +3,7 @@
     <div>
         <button class="border border-emerald-500 rounded p-2 hover:bg-emerald-400 hover:text-white @if($show_form_pembelian==="no") text-emerald-500 @elseif($show_form_pembelian==="yes") text-white bg-emerald-400 @endif" wire:click="toggleFormPembelian">+Input Pembelian</button>
         <button class="border border-indigo-400 rounded p-2 hover:bg-indigo-400 hover:text-white @if($show_filter==="no") text-indigo-400 @elseif($show_filter==="yes") text-white bg-indigo-300 @endif" wire:click="toggleFilter">Filter</button>
+        <button class="border border-orange-400 rounded p-2 hover:bg-orange-400 hover:text-white @if($show_form_edit==="no") text-orange-400 @elseif($show_form_edit==="yes") text-white bg-orange-300 @endif">Edit</button>
     </div>
     <div id="form-pembelian" class="mt-3 @if($show_form_pembelian==="no") hidden @endif">
         <form wire:submit.prevent="addPembelian" class="p-2 rounded bg-white shadow drop-shadow">
@@ -51,39 +52,39 @@
                 @if ($sistem_double_satuan==="yes")
                 <div class="grid grid-cols-3">
                     <div class="">
-                        <label for="jumlah_rol">Jumlah {{ $pembelian['satuan_rol'] }}:</label>
-                        <input id="jumlah_rol" class="input" type="number" wire:model="pembelian.jumlah_rol" wire:change="calculateHargaTotal">
+                        <label>Jumlah {{ $pembelian['satuan_rol'] }}:</label>
+                        <input class="input" type="number" wire:model="pembelian.jumlah_rol" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_rol')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
-                        <label for="jumlah_meter_1">Jumlah {{ $pembelian['satuan_meter'] }}:</label>
-                        <input id="jumlah_meter_1" class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
+                        <label>Jumlah {{ $pembelian['satuan_meter'] }}:</label>
+                        <input class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
-                        <label for="harga_meter">Harga/{{ $pembelian['satuan_meter'] }} :</label>
-                        <input id="harga_meter" class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
+                        <label>Harga/{{ $pembelian['satuan_meter'] }} :</label>
+                        <input class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                 </div>
-                @else
+                @elseif($sistem_double_satuan==="no")
                 <div class="grid grid-cols-2">
                     <div>
-                        <label for="jumlah_meter_2">Jumlah {{ $pembelian['satuan_meter'] }}:</label>
-                        <input id="jumlah_meter_2" class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
+                        <label>Jumlah {{ $pembelian['satuan_meter'] }}:</label>
+                        <input class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
-                        <label for="harga_meter">Harga/{{ $pembelian['satuan_meter'] }} :</label>
-                        <input id="harga_meter" class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
+                        <label>Harga/{{ $pembelian['satuan_meter'] }} :</label>
+                        <input class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
@@ -149,6 +150,116 @@
             </div>
         </form>
     </div>
+
+    {{-- EDIT PEMBELIAN --}}
+    <div class="mt-3 @if($show_form_edit==="no") hidden @endif">
+        <form wire:submit.prevent="editPembelian" class="p-2 rounded bg-white shadow drop-shadow">
+            <div class="grid grid-cols-3 gap-1">
+                <div class="">
+                    <label for="nama_barang">Nama Barang :</label>
+                    <input class="input" type="text" wire:model="edit_pembelian.nama_barang">
+                    @error('edit_pembelian.nama_barang')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="">
+                    <label for="jenis_barang">Jenis Barang :</label>
+                    <input class="input" type="text" wire:model="edit_pembelian.jenis_barang">
+                </div>
+                <div class="">
+                    <label for="supplier">Supplier :</label>
+                    <input class="input" type="text" wire:model="edit_pembelian.supplier">
+                </div>
+            </div>
+            <div class="flex items-center mt-2">
+                <label for="">Double Satuan:</label>
+                <div>
+                    <div class="border-2 ml-2 border-slate-200 rounded-full relative w-7 h-4 {{ $class_bg_toggle_satuan_edit }} hover:cursor-pointer" wire:click="toggleSatuanEdit">
+                        <div class="absolute rounded-full w-2 h-2 bg-white shadow drop-shadow top-0.5 {{ $class_toggle_satuan_edit }}"></div>
+                    </div>
+
+                </div>
+                @if ($sistem_double_satuan_edit==="yes")
+                <div class="flex ml-2 items-center">
+                    <label for="" class="ml-2 min-w-fit">Satuan 1:</label>
+                    <input type="text" class="ml-2 input" wire:model.lazy="edit_pembelian.satuan_rol">
+                    <label for="" class="ml-2 min-w-fit">Satuan 2:</label>
+                    <input type="text" class="ml-2 input" wire:model.lazy="edit_pembelian.satuan_meter">
+                </div>
+                @else
+                <div class="flex ml-2 items-center">
+                    <label for="" class="ml-2 min-w-fit">Satuan:</label>
+                    <input type="text" class="ml-2 input" wire:model.lazy="edit_pembelian.satuan_meter">
+                </div>
+                @endif
+            </div>
+            {{-- <input type="radio" name="satuan" wire:model="sistem_double_satuan" id="" value="yes">
+            <input type="radio" name="satuan" wire:model="sistem_double_satuan" id="" value="no"> --}}
+            <div class="grid grid-cols-3 gap-1 mt-2">
+                @if ($sistem_double_satuan_edit==="yes")
+                <div class="grid grid-cols-3">
+                    <div class="">
+                        <label>Jumlah {{ $edit_pembelian['satuan_rol'] }}:</label>
+                        <input class="input" type="number" wire:model="edit_pembelian.jumlah_rol" wire:change="calculateHargaTotalEdit">
+                        @error('edit_pembelian.jumlah_rol')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="">
+                        <label>Jumlah {{ $edit_pembelian['satuan_meter'] }}:</label>
+                        <input class="input" type="number" wire:model="edit_pembelian.jumlah_meter" wire:change="calculateHargaTotalEdit">
+                        @error('edit_pembelian.jumlah_meter')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="">
+                        <label>Harga/{{ $edit_pembelian['satuan_meter'] }} :</label>
+                        <input class="input" type="number" wire:model="edit_pembelian.harga_meter" wire:change="calculateHargaTotalEdit">
+                        @error('edit_pembelian.harga_meter')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                @else
+                <div class="grid grid-cols-2">
+                    <div>
+                        <label>Jumlah {{ $edit_pembelian['satuan_meter'] }}:</label>
+                        <input class="input" type="number" wire:model="edit_pembelian.jumlah_meter" wire:change="calculateHargaTotalEdit">
+                        @error('edit_pembelian.jumlah_meter')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="">
+                        <label>Harga/{{ $edit_pembelian['satuan_meter'] }} :</label>
+                        <input class="input" type="number" wire:model="edit_pembelian.harga_meter" wire:change="calculateHargaTotalEdit">
+                        @error('edit_pembelian.harga_meter')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                @endif
+                <div class="">
+                    <label for="harga_total">Harga Total :</label>
+                    <input id="harga_total" class="input" type="number" wire:model="edit_pembelian.harga_total">
+                    @error('edit_pembelian.harga_total')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="">
+                    <label for="tanggal">Tanggal :</label>
+                    <input class="input" type="datetime-local" step="any" wire:model="edit_pembelian.created_at">
+                    @error('edit_pembelian.created_at')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+            <div class="mt-2 text-right">
+                <button type="button" class="btn-danger rounded" wire:click="cancelEdit">Batal</button>
+                <button type="submit" class="btn-indigo rounded">Konfirm Edit</button>
+            </div>
+        </form>
+    </div>
+
     {{-- Session Feedback --}}
     @if (session()->has('success_logs'))
     <div class="mt-3 font-semibold w-full px-3 py-2 rounded bg-emerald-200 text-emerald-600 opacity-70">
