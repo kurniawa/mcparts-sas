@@ -9,7 +9,7 @@ class Pembelian extends Component
 {
     public $pembelian=[
         'nama_barang'=>'',
-        'jenis_barang'=>'',
+        'keterangan'=>'',
         'supplier'=>'',
         'satuan_rol'=>'',
         'satuan_meter'=>'',
@@ -38,7 +38,11 @@ class Pembelian extends Component
     public function render()
     {
         // $tanggal=date("Y-m-d H:i:s");
-        $pembelians=ModelsPembelian::latest()->limit(300)->paginate(50);
+        if ($this->hasil_filter!=="") {
+            $pembelians=$this->hasil_filter;
+        } else {
+            $pembelians=ModelsPembelian::latest()->limit(300)->paginate(50);
+        }
         $data=[
             'pembelians'=>$pembelians,
         ];
@@ -67,7 +71,7 @@ class Pembelian extends Component
     {
         $this->pembelian=[
             'nama_barang'=>'',
-            'jenis_barang'=>'',
+            'keterangan'=>'',
             'supplier'=>'',
             'satuan_rol'=>'rol',
             'satuan_meter'=>'meter',
@@ -127,7 +131,7 @@ class Pembelian extends Component
 
     public $filter=[
         'nama_barang'=>'',
-        'jenis_barang'=>'',
+        'keterangan'=>'',
         'supplier'=>'',
         'tanggal_dari'=> '',
         'tanggal_sampai'=> '',
@@ -147,29 +151,29 @@ class Pembelian extends Component
     {
         // dd("filter:",$this->filter);
         if ($this->filter['nama_barang']!=='') {
-            if ($this->filter['jenis_barang']!=='') {
+            if ($this->filter['keterangan']!=='') {
                 if ($this->filter['supplier']!=='') {
                     if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
                         $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
-                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->where('keterangan','like',"%".$this->filter['keterangan']."%")
                         ->where('supplier','like',"%".$this->filter['supplier']."%")
                         ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
                         ->limit(300)->orderByDesc('created_at')->get();
                     } else {
                         $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
-                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->where('keterangan','like',"%".$this->filter['keterangan']."%")
                         ->where('supplier','like',"%".$this->filter['supplier']."%")
                         ->latest()->limit(300)->get();
                     }
                 } else {
                     if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
                         $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
-                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->where('keterangan','like',"%".$this->filter['keterangan']."%")
                         ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
                         ->limit(300)->orderByDesc('created_at')->get();
                     } else {
                         $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
-                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->where('keterangan','like',"%".$this->filter['keterangan']."%")
                         ->latest()->limit(300)->get();
                     }
                 }
@@ -182,7 +186,7 @@ class Pembelian extends Component
                         ->limit(300)->orderByDesc('created_at')->get();
                     } else {
                         $pembelians=ModelsPembelian::where('nama_barang','like',"%".$this->filter['nama_barang']."%")
-                        ->where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                        ->where('keterangan','like',"%".$this->filter['keterangan']."%")
                         ->where('supplier','like',"%".$this->filter['supplier']."%")
                         ->latest()->limit(300)->get();
                     }
@@ -197,25 +201,25 @@ class Pembelian extends Component
                     }
                 }
             }
-        } elseif ($this->filter['jenis_barang']!=='') {
+        } elseif ($this->filter['keterangan']!=='') {
             if ($this->filter['supplier']!=='') {
                 if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
-                    $pembelians=ModelsPembelian::where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    $pembelians=ModelsPembelian::where('keterangan','like',"%".$this->filter['keterangan']."%")
                     ->where('supplier','like',"%".$this->filter['supplier']."%")
                     ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
                     ->limit(300)->orderByDesc('created_at')->get();
                 } else {
-                    $pembelians=ModelsPembelian::where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    $pembelians=ModelsPembelian::where('keterangan','like',"%".$this->filter['keterangan']."%")
                     ->where('supplier','like',"%".$this->filter['supplier']."%")
                     ->latest()->limit(300)->get();
                 }
             } else {
                 if ($this->filter['tanggal_dari']!=='' && $this->filter['tanggal_sampai']!=='') {
-                    $pembelians=ModelsPembelian::where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    $pembelians=ModelsPembelian::where('keterangan','like',"%".$this->filter['keterangan']."%")
                     ->whereBetween('created_at',[$this->filter['tanggal_dari'],$this->filter['tanggal_sampai']])
                     ->limit(300)->orderByDesc('created_at')->get();
                 } else {
-                    $pembelians=ModelsPembelian::where('jenis_barang','like',"%".$this->filter['jenis_barang']."%")
+                    $pembelians=ModelsPembelian::where('keterangan','like',"%".$this->filter['keterangan']."%")
                     ->latest()->limit(300)->get();
                 }
             }
@@ -243,7 +247,7 @@ class Pembelian extends Component
     public $edit_pembelian=[
         'id'=>'',
         'nama_barang'=>'',
-        'jenis_barang'=>'',
+        'keterangan'=>'',
         'supplier'=>'',
         'satuan_rol'=>'',
         'satuan_meter'=>'',
@@ -266,7 +270,7 @@ class Pembelian extends Component
         $pembelian = ModelsPembelian::find($pembelian_id);
         $this->edit_pembelian['id'] = $pembelian->id;
         $this->edit_pembelian['nama_barang'] = $pembelian->nama_barang;
-        $this->edit_pembelian['jenis_barang'] = $pembelian->jenis_barang;
+        $this->edit_pembelian['keterangan'] = $pembelian->keterangan;
         $this->edit_pembelian['supplier'] = $pembelian->supplier;
         $this->edit_pembelian['satuan_rol'] = $pembelian->satuan_rol;
         $this->edit_pembelian['satuan_meter'] = $pembelian->satuan_meter;
@@ -313,7 +317,7 @@ class Pembelian extends Component
         $pembelian = ModelsPembelian::find($this->edit_pembelian['id']);
         $pembelian->update([
             'nama_barang'=>$this->edit_pembelian['nama_barang'],
-            'jenis_barang'=>$this->edit_pembelian['jenis_barang'],
+            'keterangan'=>$this->edit_pembelian['keterangan'],
             'supplier'=>$this->edit_pembelian['supplier'],
             'satuan_rol'=>$this->edit_pembelian['satuan_rol'],
             'satuan_meter'=>$this->edit_pembelian['satuan_meter'],
@@ -333,7 +337,7 @@ class Pembelian extends Component
         $this->edit_pembelian=[
             'id'=>'',
             'nama_barang'=>'',
-            'jenis_barang'=>'',
+            'keterangan'=>'',
             'supplier'=>'',
             'satuan_rol'=>'',
             'satuan_meter'=>'',

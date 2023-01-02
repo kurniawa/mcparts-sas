@@ -9,6 +9,10 @@
         <form wire:submit.prevent="addPembelian" class="p-2 rounded bg-white shadow drop-shadow">
             <div class="grid grid-cols-3 gap-1">
                 <div class="">
+                    <label for="supplier">Supplier :</label>
+                    <input class="input" type="text" wire:model="pembelian.supplier">
+                </div>
+                <div class="">
                     <label for="nama_barang">Nama Barang :</label>
                     <input class="input" type="text" wire:model="pembelian.nama_barang">
                     @error('pembelian.nama_barang')
@@ -16,12 +20,8 @@
                     @enderror
                 </div>
                 <div class="">
-                    <label for="jenis_barang">Jenis Barang :</label>
-                    <input class="input" type="text" wire:model="pembelian.jenis_barang">
-                </div>
-                <div class="">
-                    <label for="supplier">Supplier :</label>
-                    <input class="input" type="text" wire:model="pembelian.supplier">
+                    <label for="keterangan">Keterangan :</label>
+                    <input class="input" type="text" wire:model="pembelian.keterangan">
                 </div>
             </div>
             <div class="flex items-center mt-2">
@@ -116,6 +116,12 @@
     <div class="rounded p-2 bg-white shadow drop-shadow mt-2 @if($show_filter==="no") hidden @endif">
         <form wire:submit.prevent="filterPembelians">
             <div class="grid grid-cols-3">
+                <div class="ml-2">
+                    <label>Supplier:</label>
+                    <div class="flex mt-1">
+                        <input type="text" class="input" placeholder="Supplier" wire:model="filter.supplier">
+                    </div>
+                </div>
                 <div>
                     <label>Nama Barang:</label>
                     <div class="flex mt-1">
@@ -123,15 +129,9 @@
                     </div>
                 </div>
                 <div class="ml-2">
-                    <label>Jenis Barang:</label>
+                    <label>Keterangan:</label>
                     <div class="flex mt-1">
-                        <input type="text" class="input" placeholder="Jenis Barang" wire:model="filter.jenis_barang">
-                    </div>
-                </div>
-                <div class="ml-2">
-                    <label>Supplier:</label>
-                    <div class="flex mt-1">
-                        <input type="text" class="input" placeholder="Supplier" wire:model="filter.supplier">
+                        <input type="text" class="input" placeholder="Keterangan" wire:model="filter.keterangan">
                     </div>
                 </div>
             </div>
@@ -156,6 +156,10 @@
         <form wire:submit.prevent="editPembelian" class="p-2 rounded bg-white shadow drop-shadow">
             <div class="grid grid-cols-3 gap-1">
                 <div class="">
+                    <label for="supplier">Supplier :</label>
+                    <input class="input" type="text" wire:model="edit_pembelian.supplier">
+                </div>
+                <div class="">
                     <label for="nama_barang">Nama Barang :</label>
                     <input class="input" type="text" wire:model="edit_pembelian.nama_barang">
                     @error('edit_pembelian.nama_barang')
@@ -163,12 +167,8 @@
                     @enderror
                 </div>
                 <div class="">
-                    <label for="jenis_barang">Jenis Barang :</label>
-                    <input class="input" type="text" wire:model="edit_pembelian.jenis_barang">
-                </div>
-                <div class="">
-                    <label for="supplier">Supplier :</label>
-                    <input class="input" type="text" wire:model="edit_pembelian.supplier">
+                    <label for="keterangan">Keterangan :</label>
+                    <input class="input" type="text" wire:model="edit_pembelian.keterangan">
                 </div>
             </div>
             <div class="flex items-center mt-2">
@@ -278,7 +278,7 @@
             <tr>
                 <th>Tanggal</th>
                 <th>Nama Barang</th>
-                <th>Jenis Barang</th>
+                <th>Keterangan</th>
                 <th>Supplier</th>
                 <th>Jumlah</th>
                 <th>Harga/satuan</th>
@@ -291,7 +291,7 @@
                 <tr>
                     <td>{{ date('d-m-Y',strtotime($item->created_at)) }}</td>
                     <td>{{ $item->nama_barang }}</td>
-                    <td>{{ $item->jenis_barang }}</td>
+                    <td>{{ $item->keterangan }}</td>
                     <td>{{ $item->supplier }}</td>
                     <td>
                         <span class="flex justify-center">
