@@ -135,7 +135,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex mt-1">
+            <div class="flex mt-1 ml-2">
                 <div>
                     <label>Tanggal:</label>
                     <div class="flex items-center mt-1">
