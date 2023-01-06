@@ -288,9 +288,9 @@
             </tr>
             <tr>
                 <th>Tanggal</th>
+                <th>Supplier</th>
                 <th>Nama Barang</th>
                 <th>Keterangan</th>
-                <th>Supplier</th>
                 <th colspan="2">Jumlah</th>
                 <th>Harga/satuan</th>
                 <th>Harga Total</th>
@@ -301,9 +301,9 @@
             @foreach ($pembelians as $item)
                 <tr>
                     <td>{{ date('d-m-Y',strtotime($item->created_at)) }}</td>
+                    <td>{{ $item->supplier }}</td>
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->keterangan }}</td>
-                    <td>{{ $item->supplier }}</td>
                     <td><div class="w-full flex items-center">{{ $item->jumlah_rol }} {{ $item->satuan_rol }}</div></td>
                     {{-- &#64;{{ $item->jumlah_meter }}{{ $item->satuan_meter }} --}}
                     <td><div class="w-full flex items-center">{{ $item->jumlah_meter }} {{ $item->satuan_meter }}</div></td>
@@ -345,9 +345,9 @@
             <thead>
                 <tr>
                     <th>Tanggal</th>
+                    <th>Supplier</th>
                     <th>Nama Barang</th>
                     <th>Keterangan</th>
-                    <th>Supplier</th>
                     <th colspan="2">Jumlah</th>
                     <th>Harga/satuan</th>
                     <th>Harga Total</th>
@@ -357,9 +357,9 @@
                 @foreach ($pembelians_raw as $item)
                 <tr>
                     <td>{{ date('d-m-Y',strtotime($item->created_at)) }}</td>
+                    <td>{{ $item->supplier }}</td>
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->keterangan }}</td>
-                    <td>{{ $item->supplier }}</td>
                     <td>{{ $item->jumlah_rol }} {{ $item->satuan_rol }}</td>
                     <td>{{ $item->jumlah_meter }} {{ $item->satuan_meter }}</td>
                     <td>{{ $item->harga_meter }}</td>
