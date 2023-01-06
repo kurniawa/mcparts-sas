@@ -303,14 +303,19 @@ class Pembelian extends Component
 
     public function toggleSatuanEdit()
     {
+        $pembelian = ModelsPembelian::find($this->edit_pembelian['id']);
         if ($this->sistem_double_satuan_edit==="yes") {
             $this->sistem_double_satuan_edit='no';
             $this->class_toggle_satuan_edit='left-0.5';
             $this->class_bg_toggle_satuan_edit='bg-slate-100';
+            $this->edit_pembelian['satuan_rol']=null;
+            $this->edit_pembelian['jumlah_rol']=null;
         } elseif ($this->sistem_double_satuan_edit="no") {
             $this->sistem_double_satuan_edit="yes";
             $this->class_toggle_satuan_edit='right-0.5';
             $this->class_bg_toggle_satuan_edit='bg-emerald-400';
+            $this->edit_pembelian['satuan_rol']=$pembelian->satuan_rol;
+            $this->edit_pembelian['jumlah_rol']=$pembelian->jumlah_rol;
         }
     }
 
