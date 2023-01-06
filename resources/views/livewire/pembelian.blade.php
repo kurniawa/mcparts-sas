@@ -273,14 +273,25 @@
     @endif
 
     {{-- Table Pembelian --}}
-    <table class="table-nice w-full mt-3">
+    <button class="btn-emerald rounded mt-2" onclick="downloadExcel('table_pembelian_for_download')">Download Excel</button>
+    <table class="table-nice w-full mt-1">
         <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th colspan="2"></th>
+                <th>Grand Total</th>
+                <th><div class="flex justify-between"><span>Rp</span><span>{{ number_format($grand_total,0,',','.') }},-</span></div></th>
+                <th></th>
+            </tr>
             <tr>
                 <th>Tanggal</th>
                 <th>Nama Barang</th>
                 <th>Keterangan</th>
                 <th>Supplier</th>
-                <th>Jumlah</th>
+                <th colspan="2">Jumlah</th>
                 <th>Harga/satuan</th>
                 <th>Harga Total</th>
                 <th>Opsi</th>
@@ -293,16 +304,9 @@
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->keterangan }}</td>
                     <td>{{ $item->supplier }}</td>
-                    <td>
-                        <span class="flex justify-center">
-                            @if ($item->jumlah_rol!==null)
-                            {{ $item->jumlah_rol }}{{ $item->satuan_rol }}&#64;{{ $item->jumlah_meter }}{{ $item->satuan_meter }}
-                            @else
-                            {{ $item->jumlah_meter }} {{ $item->satuan_meter }}
-                            @endif
-
-                        </span>
-                    </td>
+                    <td><div class="w-full flex items-center">{{ $item->jumlah_rol }} {{ $item->satuan_rol }}</div></td>
+                    {{-- &#64;{{ $item->jumlah_meter }}{{ $item->satuan_meter }} --}}
+                    <td><div class="w-full flex items-center">{{ $item->jumlah_meter }} {{ $item->satuan_meter }}</div></td>
                     <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_meter, 0, ',','.') }},-</span></div></td>
                     <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_total, 0, ',','.') }},-</span></div></td>
                     <td>
@@ -336,6 +340,39 @@
             </tbody>
         </table>
 
+        {{-- Table untuk PrintOut --}}
+        <table id="table_pembelian_for_download" class="hidden">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Nama Barang</th>
+                    <th>Keterangan</th>
+                    <th>Supplier</th>
+                    <th colspan="2">Jumlah</th>
+                    <th>Harga/satuan</th>
+                    <th>Harga Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($pembelians_raw as $item)
+                <tr>
+                    <td>{{ date('d-m-Y',strtotime($item->created_at)) }}</td>
+                    <td>{{ $item->nama_barang }}</td>
+                    <td>{{ $item->keterangan }}</td>
+                    <td>{{ $item->supplier }}</td>
+                    <td>{{ $item->jumlah_rol }} {{ $item->satuan_rol }}</td>
+                    <td>{{ $item->jumlah_meter }} {{ $item->satuan_meter }}</td>
+                    <td>{{ $item->harga_meter }}</td>
+                    <td>{{ $item->harga_total }}</td>
+                </tr>
+                @endforeach
+                <tr>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td>Grand Total</td>
+                    <td>{{ $grand_total }}</td>
+                </tr>
+            </tbody>
+        </table>
     <script>
         function toFormatCurrencyRp() {
             var toFormatRp=document.querySelectorAll('.toFormatCurrencyRp');
@@ -416,6 +453,11 @@
         //     // Your JS here.
         //     // toFormatCurrencyRp();
         // })
+        function downloadExcel(id_table) {
+            $(`#${id_table}`).table2excel({
+                filename:`${id_table}.xls`
+            });
+        }
     </script>
     {{-- @push('scripts')
 @endpush --}}

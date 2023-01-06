@@ -40,11 +40,19 @@ class Pembelian extends Component
         // $tanggal=date("Y-m-d H:i:s");
         if ($this->hasil_filter!=="") {
             $pembelians=$this->hasil_filter;
+            $pembelians_raw=$pembelians;
         } else {
             $pembelians=ModelsPembelian::latest()->limit(300)->paginate(50);
+            $pembelians_raw=ModelsPembelian::latest()->limit(300)->get();
+        }
+        $grand_total=0;
+        foreach ($pembelians_raw as $item) {
+            $grand_total+=$item->harga_total;
         }
         $data=[
             'pembelians'=>$pembelians,
+            'pembelians_raw'=>$pembelians_raw,
+            'grand_total'=>$grand_total,
         ];
         return view('livewire.pembelian', $data);
     }

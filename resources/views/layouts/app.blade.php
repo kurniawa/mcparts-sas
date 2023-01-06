@@ -7,6 +7,8 @@
     @vite('resources/css/app.css')
     {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="{{ asset('js/jquery-3.5.1.js') }}"></script>
+    <script src="{{ asset('js/jquery.table2excel.js') }}"></script>
     <title>MC-Parts SAS</title>
     <style>
         [x-cloak] {
