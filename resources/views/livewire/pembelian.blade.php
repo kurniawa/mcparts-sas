@@ -53,21 +53,21 @@
                 <div class="grid grid-cols-3">
                     <div class="">
                         <label>Jumlah {{ $pembelian['satuan_rol'] }}:</label>
-                        <input class="input" type="number" wire:model="pembelian.jumlah_rol" wire:change="calculateHargaTotal">
+                        <input class="input" type="number" step=.01 wire:model="pembelian.jumlah_rol" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_rol')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
                         <label>Jumlah {{ $pembelian['satuan_meter'] }}:</label>
-                        <input class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
+                        <input class="input" type="number" step=.01 wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
                         <label>Harga/{{ $pembelian['satuan_meter'] }} :</label>
-                        <input class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
+                        <input class="input" type="number" step=.01 wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
@@ -77,14 +77,14 @@
                 <div class="grid grid-cols-2">
                     <div>
                         <label>Jumlah {{ $pembelian['satuan_meter'] }}:</label>
-                        <input class="input" type="number" wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
+                        <input class="input" type="number" step=.01 wire:model="pembelian.jumlah_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
                         <label>Harga/{{ $pembelian['satuan_meter'] }} :</label>
-                        <input class="input" type="number" wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
+                        <input class="input" type="number" step=.01 wire:model="pembelian.harga_meter" wire:change="calculateHargaTotal">
                         @error('pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
@@ -93,14 +93,14 @@
                 @endif
                 <div class="">
                     <label for="harga_total">Harga Total :</label>
-                    <input id="harga_total" class="input" type="number" wire:model="pembelian.harga_total">
+                    <input id="harga_total" class="input" type="number" step=.01 wire:model="pembelian.harga_total">
                     @error('pembelian.harga_total')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="">
                     <label for="tanggal">Tanggal :</label>
-                    <input class="input" type="datetime-local" step="any" wire:model="pembelian.created_at">
+                    <input class="input" type="datetime-local" wire:model="pembelian.created_at" step="any">
                     @error('pembelian.created_at')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
@@ -200,21 +200,21 @@
                 <div class="grid grid-cols-3">
                     <div class="">
                         <label>Jumlah {{ $edit_pembelian['satuan_rol'] }}:</label>
-                        <input class="input" type="number" wire:model="edit_pembelian.jumlah_rol" wire:change="calculateHargaTotalEdit">
+                        <input class="input" type="number" step=.01 wire:model="edit_pembelian.jumlah_rol" wire:change="calculateHargaTotalEdit">
                         @error('edit_pembelian.jumlah_rol')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
                         <label>Jumlah {{ $edit_pembelian['satuan_meter'] }}:</label>
-                        <input class="input" type="number" wire:model="edit_pembelian.jumlah_meter" wire:change="calculateHargaTotalEdit">
+                        <input class="input" type="number" step=.01 wire:model="edit_pembelian.jumlah_meter" wire:change="calculateHargaTotalEdit">
                         @error('edit_pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
                         <label>Harga/{{ $edit_pembelian['satuan_meter'] }} :</label>
-                        <input class="input" type="number" wire:model="edit_pembelian.harga_meter" wire:change="calculateHargaTotalEdit">
+                        <input class="input" type="number" step=.01 wire:model="edit_pembelian.harga_meter" wire:change="calculateHargaTotalEdit">
                         @error('edit_pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
@@ -224,14 +224,14 @@
                 <div class="grid grid-cols-2">
                     <div>
                         <label>Jumlah {{ $edit_pembelian['satuan_meter'] }}:</label>
-                        <input class="input" type="number" wire:model="edit_pembelian.jumlah_meter" wire:change="calculateHargaTotalEdit">
+                        <input class="input" type="number" step=.01 wire:model="edit_pembelian.jumlah_meter" wire:change="calculateHargaTotalEdit">
                         @error('edit_pembelian.jumlah_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="">
                         <label>Harga/{{ $edit_pembelian['satuan_meter'] }} :</label>
-                        <input class="input" type="number" wire:model="edit_pembelian.harga_meter" wire:change="calculateHargaTotalEdit">
+                        <input class="input" type="number" step=.01 wire:model="edit_pembelian.harga_meter" wire:change="calculateHargaTotalEdit">
                         @error('edit_pembelian.harga_meter')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
@@ -240,7 +240,7 @@
                 @endif
                 <div class="">
                     <label for="harga_total">Harga Total :</label>
-                    <input id="harga_total" class="input" type="number" wire:model="edit_pembelian.harga_total">
+                    <input id="harga_total" class="input" type="number" step=.01 wire:model="edit_pembelian.harga_total">
                     @error('edit_pembelian.harga_total')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
@@ -307,8 +307,8 @@
                     <td><div class="w-full flex items-center">{{ $item->jumlah_rol }} {{ $item->satuan_rol }}</div></td>
                     {{-- &#64;{{ $item->jumlah_meter }}{{ $item->satuan_meter }} --}}
                     <td><div class="w-full flex items-center">{{ $item->jumlah_meter }} {{ $item->satuan_meter }}</div></td>
-                    <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_meter, 0, ',','.') }},-</span></div></td>
-                    <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_total, 0, ',','.') }},-</span></div></td>
+                    <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_meter, 2, ',','.') }}</span></div></td>
+                    <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_total, 2, ',','.') }}</span></div></td>
                     <td>
                         <div class="flex">
                             <button id="deleteButton-{{ $item->id }}" class="bg-pink-500 text-white rounded p-1 hover:bg-pink-600" onclick="showConfirmDelete('deleteButton-{{ $item->id }}','confirmDelete-{{ $item->id }}')">

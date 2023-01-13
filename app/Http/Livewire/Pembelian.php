@@ -104,9 +104,9 @@ class Pembelian extends Component
     public function calculateHargaTotal()
     {
         if ($this->sistem_double_satuan==='yes') {
-            $this->pembelian['harga_total'] = (int)$this->pembelian['jumlah_rol'] * (int)$this->pembelian['jumlah_meter'] * (int)$this->pembelian['harga_meter'];
+            $this->pembelian['harga_total'] = number_format((float)((float)$this->pembelian['jumlah_rol'] * (float)$this->pembelian['jumlah_meter'] * (float)$this->pembelian['harga_meter']),2,'.','');
         } else {
-            $this->pembelian['harga_total'] = (int)$this->pembelian['jumlah_meter'] * (int)$this->pembelian['harga_meter'];
+            $this->pembelian['harga_total'] = number_format((float)((float)$this->pembelian['jumlah_meter'] * (float)$this->pembelian['harga_meter']),2,'.','');
         }
     }
 
