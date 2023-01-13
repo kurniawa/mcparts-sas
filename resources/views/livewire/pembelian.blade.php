@@ -304,9 +304,29 @@
                     <td>{{ $item->supplier }}</td>
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->keterangan }}</td>
-                    <td><div class="w-full flex items-center">{{ $item->jumlah_rol }} {{ $item->satuan_rol }}</div></td>
+                    <td>
+                        <div class="w-full flex items-center">
+                            @if ($item->jumlah_rol !== null && $item->jumlah_rol !== "")
+                                @if (fmod($item->jumlah_rol, 1) !== 0.00)
+                                {{ $item->jumlah_rol+0 }} {{ $item->satuan_rol }}
+                                @else
+                                {{ (int)$item->jumlah_rol }} {{ $item->satuan_rol }}
+                                @endif
+                            @else
+                            -
+                            @endif
+                        </div>
+                    </td>
                     {{-- &#64;{{ $item->jumlah_meter }}{{ $item->satuan_meter }} --}}
-                    <td><div class="w-full flex items-center">{{ $item->jumlah_meter }} {{ $item->satuan_meter }}</div></td>
+                    <td>
+                        <div class="w-full flex items-center">
+                            @if (fmod($item->jumlah_meter, 1) !== 0.00)
+                                {{ $item->jumlah_meter+0 }} {{ $item->satuan_meter }}
+                            @else
+                            {{ (int)$item->jumlah_meter }} {{ $item->satuan_meter }}
+                            @endif
+                        </div>
+                    </td>
                     <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_meter, 2, ',','.') }}</span></div></td>
                     <td><div class="flex justify-between"><span>Rp</span><span>{{ number_format($item->harga_total, 2, ',','.') }}</span></div></td>
                     <td>
