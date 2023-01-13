@@ -367,9 +367,19 @@ class Pembelian extends Component
     public function calculateHargaTotalEdit()
     {
         if ($this->sistem_double_satuan_edit==='yes') {
-            $this->edit_pembelian['harga_total'] = (int)$this->edit_pembelian['jumlah_rol'] * (int)$this->edit_pembelian['jumlah_meter'] * (int)$this->edit_pembelian['harga_meter'];
+            $this->edit_pembelian['harga_total'] = number_format((float)((float)$this->edit_pembelian['jumlah_rol'] * (float)$this->edit_pembelian['jumlah_meter'] * (float)$this->edit_pembelian['harga_meter']),2,'.','');
         } else {
-            $this->edit_pembelian['harga_total'] = (int)$this->edit_pembelian['jumlah_meter'] * (int)$this->edit_pembelian['harga_meter'];
+            $this->edit_pembelian['harga_total'] = number_format((float)((float)$this->edit_pembelian['jumlah_meter'] * (float)$this->edit_pembelian['harga_meter']),2,'.','');
         }
+    }
+
+    // FITUR LUNAS
+    public function tetapkanLunas($pembelian_id)
+    {
+        $pembelian=ModelsPembelian::find($pembelian_id);
+        $pembelian->update([
+            'status_pembayaran'=>'LUNAS'
+        ]);
+        session()->flash('success_logs',"Pembelian $pembelian->nama_barang ditetapkan LUNAS!");
     }
 }

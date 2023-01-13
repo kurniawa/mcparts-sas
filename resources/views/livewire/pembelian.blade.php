@@ -339,7 +339,7 @@
                             <div id="confirmDelete-{{ $item->id }}" class="hidden">
                                 <button class="bg-pink-500 text-white rounded p-1 hover:bg-pink-600" wire:click="deletePembelian({{ $item->id }})">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                     </svg>
                                 </button>
                                 <button class="bg-yellow-400 text-white rounded p-1 hover:bg-yellow-500 ml-1" onclick="hideConfirmDelete('deleteButton-{{ $item->id }}','confirmDelete-{{ $item->id }}')">
@@ -353,7 +353,28 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
                             </button>
+                            <button id="btn-toggle-lunas-{{ $item->id }}" class="border border-emerald-400 text-emerald-500 rounded p-1 hover:bg-emerald-500 ml-1 hover:text-white" onclick="toggleLunas({{ $item->id }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                </svg>
+                            </button>
                         </div>
+                    </td>
+                </tr>
+                <tr id="form-lunas-{{ $item->id }}">
+                    <td colspan="9">
+                        <form action="" class="flex justify-end">
+                            <div>
+                                <label for="">Status Pembayaran:</label>
+                                <select name="status_pembayaran" class="input">
+                                    <option value="BELUM">BELUM</option>
+                                    <option value="SEBAGIAN">SEBAGIAN</option>
+                                    <option value="LUNAS">LUNAS</option>
+                                </select>
+                                <textarea type="text" class="input mt-1" placeholder="Keterangan Bayar"></textarea>
+                                <button>Confirm</button>
+                            </div>
+                        </form>
                     </td>
                 </tr>
                 @endforeach
@@ -380,8 +401,24 @@
                     <td>{{ $item->supplier }}</td>
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->keterangan }}</td>
-                    <td>{{ $item->jumlah_rol }} {{ $item->satuan_rol }}</td>
-                    <td>{{ $item->jumlah_meter }} {{ $item->satuan_meter }}</td>
+                    <td>
+                        @if ($item->jumlah_rol !== null && $item->jumlah_rol !== "")
+                            @if (fmod($item->jumlah_rol, 1) !== 0.00)
+                            {{ $item->jumlah_rol+0 }} {{ $item->satuan_rol }}
+                            @else
+                            {{ (int)$item->jumlah_rol }} {{ $item->satuan_rol }}
+                            @endif
+                        @else
+                        -
+                        @endif
+                    </td>
+                    <td>
+                        @if (fmod($item->jumlah_meter, 1) !== 0.00)
+                            {{ $item->jumlah_meter+0 }} {{ $item->satuan_meter }}
+                        @else
+                        {{ (int)$item->jumlah_meter }} {{ $item->satuan_meter }}
+                        @endif
+                    </td>
                     <td>{{ $item->harga_meter }}</td>
                     <td>{{ $item->harga_total }}</td>
                 </tr>
@@ -477,6 +514,23 @@
             $(`#${id_table}`).table2excel({
                 filename:`${id_table}.xls`
             });
+        }
+
+        // FITUR LUNAS
+        function toggleLunas(pembelian_id) {
+            var form_lunas=document.getElementById(`form-lunas-${pembelian_id}`);
+            var btn_toggle_lunas=document.getElementById(`btn-toggle-lunas-${pembelian_id}`);
+            if (form_lunas.classList.contains('hidden')) {
+                form_lunas.classList.remove('hidden');
+                btn_toggle_lunas.classList.remove('text-emerald-500');
+                btn_toggle_lunas.classList.add('text-white');
+                btn_toggle_lunas.classList.add('bg-emerald-400');
+            } else {
+                form_lunas.classList.add('hidden');
+                btn_toggle_lunas.classList.remove('bg-emerald-400');
+                btn_toggle_lunas.classList.remove('text-white');
+                btn_toggle_lunas.classList.add('text-emerald-500');
+            }
         }
     </script>
     {{-- @push('scripts')

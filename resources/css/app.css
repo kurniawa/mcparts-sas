@@ -91,7 +91,7 @@ h3 {
 
 /*Form*/
 .input {
-    @apply border border-slate-400 text-slate-700 shadow rounded w-full px-3 py-2 block placeholder:text-slate-400 focus:outline-none focus:border-none focus:ring-1 focus:ring-blue-500 invalid:text-pink-700 invalid:focus:ring-pink-700;
+    @apply border border-slate-400 text-slate-700 shadow rounded px-3 py-2 block placeholder:text-slate-400 focus:outline-none focus:border-none focus:ring-1 focus:ring-blue-500 invalid:text-pink-700 invalid:focus:ring-pink-700;
 }
 .form-select {
     @apply border border-slate-300 py-1 rounded;
